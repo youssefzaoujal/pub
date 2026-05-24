@@ -362,136 +362,71 @@ html.promo-theme {
   .ambient-orb,
   .animate-blob,
   .animate-gradient-shift,
-  .carousel-3d-inner--spin {
-    animation: none !important;
-  }
-
   html {
     scroll-behavior: auto;
   }
-}
 
-/* ——— Carrousel 3D 360° ——— */
-.mesh-conic {
-  background: conic-gradient(
-    from 120deg at 50% 50%,
-    rgba(166, 124, 82, 0.12),
-    rgba(251, 191, 36, 0.08),
-    rgba(166, 124, 82, 0.06),
-    rgba(255, 255, 255, 0.05),
-    rgba(166, 124, 82, 0.12)
-  );
-}
-
-.carousel-3d {
-  --carousel-radius: 220px;
-  --carousel-card-w: 168px;
-  --carousel-card-h: 240px;
-  --carousel-duration: 42s;
-}
-
-@media (min-width: 640px) {
-  .carousel-3d {
-    --carousel-radius: 280px;
-    --carousel-card-w: 200px;
-    --carousel-card-h: 280px;
+  .carousel-styled-viewport .flex {
+    transition: none !important;
   }
 }
 
-@media (min-width: 1024px) {
-  .carousel-3d {
-    --carousel-radius: 340px;
-    --carousel-card-w: 220px;
-    --carousel-card-h: 300px;
-    --carousel-duration: 48s;
-  }
-}
-
-.carousel-3d-stage {
-  height: 340px;
-  perspective: 1100px;
-  perspective-origin: 50% 45%;
-}
-
-@media (min-width: 640px) {
-  .carousel-3d-stage {
-    height: 400px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .carousel-3d-stage {
-    height: 420px;
-    perspective: 1200px;
-  }
-}
-
-.carousel-3d-stage--quote {
-  --carousel-card-h: 260px;
-}
-
-@media (min-width: 1024px) {
-  .carousel-3d-stage--quote {
-    --carousel-card-h: 280px;
-  }
-}
-
-.carousel-3d-inner {
+/* Carrousel stylé (clients, restaurants, avis) */
+.carousel-styled {
   position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transform: rotateY(0deg);
+  padding-inline: 2.75rem;
 }
 
-.carousel-3d-inner--spin {
-  animation: carousel-3d-spin var(--carousel-duration) linear infinite;
-}
-
-.carousel-3d-inner--paused {
-  animation: none;
-}
-
-.carousel-3d-inner--spin:hover {
-  animation-play-state: paused;
-}
-
-@keyframes carousel-3d-spin {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(-360deg);
+@media (min-width: 640px) {
+  .carousel-styled {
+    padding-inline: 3.25rem;
   }
 }
 
-.carousel-3d-card {
+.carousel-styled-viewport {
+  touch-action: pan-y pinch-zoom;
+}
+
+.carousel-styled-nav {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--carousel-card-w);
-  height: var(--carousel-card-h);
-  margin-left: calc(var(--carousel-card-w) / -2);
-  margin-top: calc(var(--carousel-card-h) / -2);
-  transform: rotateY(var(--card-angle)) translateZ(var(--carousel-radius));
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: transform 0.35s ease, filter 0.35s ease;
-  will-change: transform;
-}
-
-.carousel-3d-card:hover {
-  transform: rotateY(var(--card-angle)) translateZ(calc(var(--carousel-radius) + 36px))
-    scale(1.04);
-  filter: drop-shadow(0 20px 40px rgba(166, 124, 82, 0.35));
+  top: 42%;
+  transform: translateY(-50%);
   z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(166, 124, 82, 0.2);
+  color: #8c664b;
+  box-shadow: 0 4px 20px rgba(166, 124, 82, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.perf-lite .carousel-3d-inner--spin {
-  animation-duration: 60s;
+@media (min-width: 640px) {
+  .carousel-styled-nav {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
 }
 
-.perf-lite .carousel-3d-card:hover {
-  transform: rotateY(var(--card-angle)) translateZ(var(--carousel-radius));
-  filter: none;
+.carousel-styled-nav:hover {
+  transform: translateY(-50%) scale(1.08);
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(166, 124, 82, 0.25);
+  color: #A67C52;
+}
+
+.carousel-styled-nav:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.carousel-styled-nav--prev {
+  inset-inline-start: 0;
+}
+
+.carousel-styled-nav--next {
+  inset-inline-end: 0;
 }

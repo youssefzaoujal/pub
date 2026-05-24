@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { DeferredMount } from "@/components/DeferredMount";
-import { Carousel3D } from "@/components/design/Carousel3D";
+import { StyledCarousel } from "@/components/design/StyledCarousel";
 import { usePerf } from "@/contexts/PerformanceContext";
 import {
   CLIENT_CAROUSEL_ITEMS,
@@ -365,89 +365,27 @@ function Navigation() {
 
       <div className="container mx-auto px-4 md:px-6 relative">
         <div className="flex items-center justify-between h-16 sm:h-20 shrink-0">
-          {/* Logo with 3D effect and glow */}
           <motion.a
             href="#hero"
-            className="flex items-center gap-3 cursor-pointer group relative"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-3 cursor-pointer"
+            whileTap={{ scale: 0.98 }}
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
-            {/* Glow effect behind logo */}
-            <motion.div
-              className="absolute -inset-2 bg-primary/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(166,124,82,0.3)",
-                  "0 0 40px rgba(166,124,82,0.5)",
-                  "0 0 20px rgba(166,124,82,0.3)",
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-              }}
+            <img
+              src="/logo.png"
+              alt="Logo F'Yedk Pub"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-[#A67C52]/20 shadow-sm"
             />
-            
-            {/* Logo image with rotation effect */}
-            <motion.div
-              className="relative"
-              whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.img
-                src="/logo.png"
-                alt="Logo"
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-xl border-2 border-white/50 relative z-10"
-                whileHover={{ 
-                  boxShadow: "0 10px 30px rgba(166,124,82,0.4)",
-                  borderColor: "rgba(166,124,82,0.6)"
-                }}
-              />
-              {/* Shine effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-xl z-20"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "100%" }}
-                transition={{ duration: 0.6 }}
-              />
-            </motion.div>
 
-            <div className="relative z-10" dir="ltr">
-              <motion.h4
-                className="text-lg sm:text-2xl font-bold tracking-tight font-latin"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                F'Yedk{" "}
-                <motion.span
-                  className="text-primary relative inline-block"
-                  animate={{
-                    textShadow: [
-                      "0 0 10px rgba(166,124,82,0.5)",
-                      "0 0 20px rgba(166,124,82,0.8)",
-                      "0 0 10px rgba(166,124,82,0.5)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                >
-                  Pub
-                </motion.span>
-              </motion.h4>
-              <motion.p
-                className="text-xs text-muted-foreground font-medium font-latin"
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
+            <div dir="ltr">
+              <h4 className="text-lg sm:text-2xl font-bold tracking-tight font-latin">
+                F'Yedk <span className="text-primary">Pub</span>
+              </h4>
+              <p className="text-xs text-muted-foreground font-medium font-latin">
                 {t("nav.tagline")}
-              </motion.p>
+              </p>
             </div>
           </motion.a>
 
@@ -852,7 +790,7 @@ function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
-            className="lg:col-span-5 flex flex-col justify-center relative z-30 text-center lg:text-left items-center lg:items-start"
+            className="lg:col-span-5 flex flex-col justify-center relative z-30 text-center items-center"
           >
           {/* Promo highlight */}
           <motion.div
@@ -951,46 +889,45 @@ function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Arabic Title ULTRA ENHANCED */}
-          <div className="overflow-visible mb-6 relative">
-            {/* Glow behind text */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-b from-yellow-400/30 via-orange-400/20 to-transparent blur-3xl -z-10"
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.3, 0.5, 0.3],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <motion.h1
-              variants={textReveal}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight relative"
-            >
-              <span
-                className={cn(
-                  "block text-gradient-gold pb-2 sm:pb-4 lg:scale-[1.02] relative drop-shadow-sm",
-                  "font-arabic"
-                )}
-                dir="rtl"
-                style={{
-                  textShadow: "0 15px 40px rgba(166,124,82,0.3), 0 0 80px rgba(234,179,8,0.2)",
-                  filter: "drop-shadow(0 0 20px rgba(234,179,8,0.3))",
+          {/* Titre + slogan — centrés */}
+          <div className="w-full max-w-4xl mx-auto text-center flex flex-col items-center mb-8 sm:mb-10 md:mb-12">
+            <div className="overflow-visible mb-4 sm:mb-6 relative w-full">
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-b from-yellow-400/30 via-orange-400/20 to-transparent blur-3xl -z-10"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0.5, 0.3],
                 }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.h1
+                variants={textReveal}
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight relative text-center"
               >
-                {t("hero.title")}
-              </span>
-            </motion.h1>
-          </div>
+                <span
+                  className={cn(
+                    "block text-center text-gradient-gold pb-2 sm:pb-4 lg:scale-[1.02] relative drop-shadow-sm",
+                    "font-arabic"
+                  )}
+                  dir="rtl"
+                  style={{
+                    textShadow:
+                      "0 15px 40px rgba(166,124,82,0.3), 0 0 80px rgba(234,179,8,0.2)",
+                    filter: "drop-shadow(0 0 20px rgba(234,179,8,0.3))",
+                  }}
+                >
+                  {t("hero.title")}
+                </span>
+              </motion.h1>
+            </div>
 
-          {/* Slogan — Ton business f'Yed nass */}
-          <div className="overflow-visible mb-8 sm:mb-10 md:mb-12">
-            <motion.h2 variants={textReveal}>
+            <motion.h2 variants={textReveal} className="w-full text-center">
               <span
-                className="block text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-[#8c6743] font-bold relative font-latin"
+                className="block text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-[#8c6743] font-bold relative font-latin"
                 dir="ltr"
               >
                 {t("nav.tagline")}
@@ -1031,7 +968,7 @@ function Hero() {
                   alt="Présentation App"
                   width={800}
                   height={600}
-                  fetchPriority="high"
+                  fetchpriority="high"
                   loading="eager"
                   decoding="async"
                   className="w-full h-full object-cover filter saturate-[1.1] contrast-[1.05]"
@@ -1083,21 +1020,6 @@ function Hero() {
                 <Target className="w-5 h-5 text-emerald-600" />
               </motion.div>
               <span className="font-bold text-emerald-700 text-sm">Ciblage Précis</span>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: 40 }}
-              animate={{ opacity: 1, scale: 1, x: 0, y: [0, 8, 0] }}
-              transition={{
-                opacity: { delay: 2, duration: 0.6 },
-                y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-              }}
-              className="absolute -bottom-4 -left-2 sm:-bottom-8 sm:-left-6 glass-card px-3 sm:px-4 py-2 rounded-2xl shadow-glow z-40 border-amber-200/60"
-            >
-              <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-600" />
-                <span className="font-bold text-[#8c664b] text-sm">15× plus de portée</span>
-              </div>
             </motion.div>
 
           </motion.div>
@@ -2570,210 +2492,6 @@ function ROISection() {
   );
 }
 
-// === CLIENTS CAROUSEL (شبكة زبناؤنا) ===
-function ClientsCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-  
-  const clients = [
-    {
-      name: "Acces Immo Tanger",
-      category: "وكالة عقارية",
-      image: "/clients/acces-immo.webp",
-      imageFit: "cover" as const,
-      description: "طنجة · كراء، بيع ومحلات مهنية",
-    },
-    {
-      name: "Castle Agency Tanger",
-      category: "وكالة عقارية",
-      image: "/clients/castle-agency.jpg",
-      imageFit: "cover" as const,
-      description: "طنجة · شقق، فلل ومحلات للكراء والبيع",
-    },
-    {
-      name: "MBI Invest",
-      category: "عقار تجاري",
-      image: "/clients/mbi-invest.jpg",
-      imageFit: "cover" as const,
-      description: "طنجة · محلات، مكاتب ومساحات مهنية",
-    },
-    {
-      name: "Pâtisserie Al Fath",
-      category: "حلويات",
-      image: "/clients/patisserie-al-fath.jpg",
-      imageFit: "cover" as const,
-      description: "92 شارع أنفا، طنجة · معجنات وحلويات",
-    },
-    {
-      name: "Jimmy's Fitness",
-      category: "قاعة رياضية",
-      image: "/clients/jimmys-fitness.jpg",
-      imageFit: "cover" as const,
-      description: "طنجة · لياقة بدنية وتدريب",
-    },
-    {
-      name: "Need Sport Gym",
-      category: "قاعة رياضية",
-      image: "/clients/needsport.jpg",
-      imageFit: "contain" as const,
-      description: "طنجة · صالة رياضية ومعدات حديثة",
-    },
-    {
-      name: "BudoClub Tanger",
-      category: "رياضة وفنون قتالية",
-      image: "/clients/budoclub.jpg",
-      imageFit: "contain" as const,
-      description: "طنجة · فنون قتالية ودفاع عن النفس",
-    },
-    {
-      name: "Adrigym",
-      category: "قاعة رياضية",
-      image: "/clients/adrigym.jpg",
-      imageFit: "cover" as const,
-      description: "تانجا مول هيلتون، طنجة · لياقة وتمارين",
-    },
-  ];
-
-  // Responsive slides to show
-  const getSlidesToShow = () => {
-    if (typeof window !== 'undefined') {
-      if (window.innerWidth < 640) return 1; // mobile
-      if (window.innerWidth < 1024) return 2; // tablet
-      return 4; // desktop
-    }
-    return 4;
-  };
-
-  const [slidesToShow, setSlidesToShow] = useState(getSlidesToShow());
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSlidesToShow(getSlidesToShow());
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const totalSlides = clients.length;
-  const maxIndex = Math.max(0, totalSlides - slidesToShow);
-
-  const rootRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(rootRef, { margin: "-80px", amount: 0.15 });
-  const mode = usePerf();
-
-  const nextSlide = useCallback(() => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % (maxIndex + 1));
-  }, [maxIndex]);
-
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + (maxIndex + 1)) % (maxIndex + 1));
-  };
-
-  useCarouselAutoplay(
-    isInView && maxIndex > 0 && mode === "full",
-    nextSlide,
-    5000
-  );
-
-  const visibleClients = clients.slice(currentIndex, currentIndex + slidesToShow);
-
-  return (
-    <div ref={rootRef} className="relative">
-      {/* Navigation Buttons */}
-      <button
-        onClick={prevSlide}
-        className="carousel-nav-btn absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="Previous"
-      >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-      
-      <button
-        onClick={nextSlide}
-        className="carousel-nav-btn absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="Next"
-      >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-
-      {/* Carousel Container */}
-      <div className="overflow-hidden px-4 sm:px-10 md:px-12">
-        <div className="flex gap-4 sm:gap-6 transition-transform duration-500 ease-in-out min-w-0">
-          {visibleClients.map((client, index) => (
-            <motion.div
-              key={`${currentIndex}-${index}`}
-              initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
-              transition={{ duration: 0.5 }}
-              className={carouselSlideClass(slidesToShow)}
-            >
-              <div className="group relative overflow-hidden rounded-xl sm:rounded-2xl glass-card hover:shadow-glow transition-all duration-500 hover:-translate-y-2">
-                {/* Image */}
-                <div
-                  className={cn(
-                    "relative h-40 sm:h-48 md:h-56 overflow-hidden",
-                    client.imageFit === "contain" && "bg-gradient-to-b from-gray-50 to-white"
-                  )}
-                >
-                  <img
-                    src={client.image}
-                    alt={client.name}
-                    loading="lazy"
-                    className={cn(
-                      "w-full h-full transition-transform duration-500 group-hover:scale-110",
-                      client.imageFit === "contain"
-                        ? "object-contain p-4 sm:p-6"
-                        : "object-cover"
-                    )}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Type Badge */}
-                  <div className="absolute top-4 right-4 bg-[#A67C52]/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold font-arabic">
-                    {client.category}
-                  </div>
-                </div>
-                
-                {/* Content */}
-                <div className="p-4 sm:p-5 md:p-6">
-                  <h3 className="font-bold font-arabic text-lg sm:text-xl text-gray-900 mb-2" dir="rtl">
-                    {client.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 font-arabic" dir="rtl">
-                    {client.description}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Dots Indicator */}
-      <div className="flex justify-center gap-2 mt-6 sm:mt-8">
-        {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
-              setCurrentIndex(index);
-            }}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex
-                ? "w-8 bg-[#A67C52]"
-                : "w-2 bg-gray-300 hover:bg-gray-400"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // === ENHANCED PARTNERS SECTION ===
 function Partners() {
   const { t } = useLanguage();
@@ -2790,7 +2508,6 @@ function Partners() {
           title={t("sections.clients")}
         />
         
-        {/* Carousel */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -2798,233 +2515,15 @@ function Partners() {
           viewport={{ once: true }}
           className="mb-8 sm:mb-12 md:mb-16"
         >
-          <ClientsCarousel />
+          <StyledCarousel
+            items={CLIENT_CAROUSEL_ITEMS}
+            variant="partner"
+            ariaLabel="شبكة زبناؤنا"
+          />
         </motion.div>
         
       </div>
     </section>
-  );
-}
-
-// === PARTNERS RESTAURANTS CAROUSEL (شبكة شركائنا) ===
-function PartnersRestaurantsCarousel() {
-  const { t } = useLanguage();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-
-  const restaurants = [
-    {
-      name: "Tramontana",
-      image: "/clients/tramontana.jpg",
-      type: "مطعم",
-      description: "شارع مولاي الرشيد، مجمع عايدة فيلاج، طنجة",
-    },
-    {
-      name: "Tajino",
-      image: "/clients/tajino.jpg",
-      type: "مطعم",
-      description: "10 شارع عبد الله الحبتي، طنجة · مطبخ مغربي",
-    },
-    {
-      name: "Pizzeria Les Amis",
-      image: "/clients/pizzeria-les-amis.jpg",
-      type: "مطعم",
-      description: "طريق الركايع، طنجة",
-    },
-    {
-      name: "Pomod'oro Tanger",
-      image: "/clients/pomodoro.jpg",
-      type: "مطعم",
-      description: "شارع مولاي إسماعيل، طنجة",
-    },
-    {
-      name: "Anber Tanger",
-      image: "/clients/anber-tanger.jpg",
-      type: "مطعم",
-      description: "مالاباتا، طنجة · مطبخ مغربي فاخر",
-    },
-    {
-      name: "La Muralla",
-      image: "/clients/la-muralla.jpg",
-      type: "مطعم",
-      description: "القصبة، طنجة · مطبخ على السطح",
-    },
-    {
-      name: "Safran by Kôya",
-      image: "/clients/safran-koya.jpg",
-      type: "مطعم",
-      description: "تانجا مارينا باي، طنجة",
-    },
-    {
-      name: "Saveur de Poisson",
-      image: "/clients/saveur-poisson.jpg",
-      type: "مطعم",
-      description: "2 Escalier Waller، طنجة · مأكولات بحرية",
-    },
-    {
-      name: "Restaurant Ahlen",
-      image: "/clients/restaurant-ahlen.jpg",
-      type: "مطعم",
-      description: "8 شارع البريد، طنجة · مطبخ مغربي",
-    },
-    {
-      name: "NOMMOS",
-      image: "/clients/nommos.jpg",
-      type: "مطعم",
-      description: "خليج طنجة · مطبخ متوسطي وعروض حية",
-    },
-    {
-      name: "Casa José",
-      image: "/clients/casa-jose.jpg",
-      type: "مطعم",
-      description: "طنجة · مطبخ إسباني ومأكولات بحرية",
-    },
-  ];
-
-  const getSlidesToShow = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1;
-      if (window.innerWidth < 1024) return 2;
-      return 4;
-    }
-    return 4;
-  };
-
-  const [slidesToShow, setSlidesToShow] = useState(getSlidesToShow);
-
-  useEffect(() => {
-    const handleResize = () => setSlidesToShow(getSlidesToShow());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const maxIndex = Math.max(0, restaurants.length - slidesToShow);
-
-  const rootRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(rootRef, { margin: "-80px", amount: 0.15 });
-  const mode = usePerf();
-
-  const nextSlide = useCallback(() => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % (maxIndex + 1));
-  }, [maxIndex]);
-
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + (maxIndex + 1)) % (maxIndex + 1));
-  };
-
-  useCarouselAutoplay(
-    isInView && maxIndex > 0 && mode === "full",
-    nextSlide,
-    5000
-  );
-
-  const visibleRestaurants = restaurants.slice(
-    currentIndex,
-    currentIndex + slidesToShow
-  );
-
-  return (
-    <div ref={rootRef} className="relative">
-      <button
-        type="button"
-        onClick={prevSlide}
-        className="carousel-nav-btn absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="المطعم السابق"
-      >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-
-      <button
-        type="button"
-        onClick={nextSlide}
-        className="carousel-nav-btn absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="المطعم التالي"
-      >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-
-      <div className="overflow-hidden px-4 sm:px-10 md:px-12">
-        <div className="flex gap-4 sm:gap-6 min-w-0">
-          {visibleRestaurants.map((restaurant, index) => (
-            <motion.div
-              key={`${currentIndex}-${restaurant.name}-${index}`}
-              initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className={carouselSlideClass(slidesToShow)}
-            >
-              <Card3D>
-                <div className="group glass-card rounded-xl sm:rounded-2xl overflow-hidden hover:shadow-glow transition-all duration-500 hover:-translate-y-2 h-full">
-                  <div className="relative h-40 sm:h-48 md:h-56 overflow-hidden">
-                    <img
-                      src={restaurant.image}
-                      alt={restaurant.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-[#A67C52]/90 backdrop-blur-sm text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold font-arabic">
-                      {restaurant.type}
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-6">
-                    <h3
-                      className="text-lg sm:text-xl font-bold font-arabic mb-2 text-gray-900"
-                      dir="rtl"
-                    >
-                      {restaurant.name}
-                    </h3>
-                    <p
-                      className="text-xs sm:text-sm text-gray-600 font-arabic mb-3"
-                      dir="rtl"
-                    >
-                      {restaurant.description}
-                    </p>
-                    <div
-                      className="flex items-center gap-2 justify-end"
-                      dir="rtl"
-                    >
-                      <span
-                        className={cn(
-                          "text-xs sm:text-sm text-gray-600",
-                          "font-arabic"
-                        )}
-                      >
-                        {t("sections.partnerBadge")}
-                      </span>
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    </div>
-                  </div>
-                </div>
-              </Card3D>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-center gap-2 mt-6 sm:mt-8">
-        {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
-              setCurrentIndex(index);
-            }}
-            className={cn(
-              "h-2 rounded-full transition-all duration-300",
-              index === currentIndex
-                ? "w-8 bg-[#A67C52]"
-                : "w-2 bg-gray-300 hover:bg-gray-400"
-            )}
-            aria-label={`الانتقال إلى الشريحة ${index + 1}`}
-          />
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -3060,191 +2559,15 @@ function PartnersDistributors() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <PartnersRestaurantsCarousel />
+            <StyledCarousel
+              items={RESTAURANT_CAROUSEL_ITEMS}
+              variant="partner"
+              ariaLabel="شبكة شركائنا"
+            />
           </motion.div>
         </div>
       </div>
     </section>
-  );
-}
-
-// === TESTIMONIALS CAROUSEL (آراء زبنائنا) ===
-function TestimonialsCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-
-  const testimonials = [
-    {
-      name: "حميد رشدي",
-      business: "مقهى الوردة",
-      content:
-        "خدمة مزيانة بزاف، الناس كاتعرف على العرض ديالي وحتا الطلب زاد. أنا راضي بزاف ومستامر معاهم.",
-      rating: 5,
-    },
-    {
-      name: "سارة العلمي",
-      business: "صالون تجميل",
-      content:
-        "الإشهار ديالي وصل لنساء من الحي، وبدات نحصل على زبناء جدد. طريقة بسيطة وفعالة.",
-      rating: 5,
-    },
-    {
-      name: "يوسف بلمهدي",
-      business: "مخبز حديث",
-      content:
-        "كنت متشكك في البداية، ولكن النتائج كانت مذهلة. التكلفة مناسبة والوصول كبير.",
-      rating: 5,
-    },
-    {
-      name: "صاحبة صالون تجميل",
-      business: "طنجة",
-      content:
-        "عجبني بزاف الاستهداف ديال المنطقة، حسّيت الإعلان ديالي كيوصل مباشرة للناس اللي قريبين مني.",
-      rating: 5,
-    },
-    {
-      name: "صاحب مخبزة",
-      business: "طنجة",
-      content:
-        "ما كنتش متأكد فالأول، ولكن من بعد الخدمة بان ليا الفرق فعدد الزبناء. طريقة ذكية للإشهار المحلي.",
-      rating: 5,
-    },
-  ];
-
-  const getSlidesToShow = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1;
-      if (window.innerWidth < 1024) return 2;
-      return 3;
-    }
-    return 3;
-  };
-
-  const [slidesToShow, setSlidesToShow] = useState(getSlidesToShow);
-
-  useEffect(() => {
-    const handleResize = () => setSlidesToShow(getSlidesToShow());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const maxIndex = Math.max(0, testimonials.length - slidesToShow);
-
-  const rootRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(rootRef, { margin: "-80px", amount: 0.15 });
-  const mode = usePerf();
-
-  const nextSlide = useCallback(() => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % (maxIndex + 1));
-  }, [maxIndex]);
-
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + (maxIndex + 1)) % (maxIndex + 1));
-  };
-
-  useCarouselAutoplay(
-    isInView && maxIndex > 0 && mode === "full",
-    nextSlide,
-    6000
-  );
-
-  const visibleTestimonials = testimonials.slice(
-    currentIndex,
-    currentIndex + slidesToShow
-  );
-
-  return (
-    <div ref={rootRef} className="relative max-w-6xl mx-auto">
-      <button
-        type="button"
-        onClick={prevSlide}
-        className="carousel-nav-btn absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="الشهادة السابقة"
-      >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-
-      <button
-        type="button"
-        onClick={nextSlide}
-        className="carousel-nav-btn absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white shadow-xl rounded-full p-2 sm:p-3 transition-all duration-300 hover:scale-110 border border-gray-200"
-        aria-label="الشهادة التالية"
-      >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#A67C52]" />
-      </button>
-
-      <div className="overflow-hidden px-4 sm:px-10 md:px-12">
-        <div className="flex gap-4 sm:gap-6 min-w-0">
-          {visibleTestimonials.map((testimonial, index) => (
-            <motion.div
-              key={`${currentIndex}-${testimonial.name}-${index}`}
-              initial={{ opacity: 0, x: direction > 0 ? 80 : -80 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.45 }}
-              className={carouselSlideClass(slidesToShow)}
-            >
-              <Card3D>
-                <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl border border-border h-full flex flex-col">
-                  <div className="flex items-center justify-end gap-1 sm:gap-2 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={cn(
-                          "w-4 h-4 sm:w-5 sm:h-5",
-                          i < testimonial.rating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "fill-gray-200 text-gray-200"
-                        )}
-                      />
-                    ))}
-                  </div>
-
-                  <Quote className="w-9 h-9 sm:w-11 sm:h-11 text-primary/20 mb-4 ms-auto" />
-
-                  <p
-                    className="text-base sm:text-lg font-arabic leading-relaxed text-right mb-6 flex-grow"
-                    dir="rtl"
-                  >
-                    &ldquo;{testimonial.content}&rdquo;
-                  </p>
-
-                  <div className="pt-4 sm:pt-5 border-t text-right" dir="rtl">
-                    <h4 className="font-bold font-arabic text-base sm:text-lg text-gray-900">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-muted-foreground font-arabic mt-1">
-                      {testimonial.business}
-                    </p>
-                  </div>
-                </div>
-              </Card3D>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-center gap-2 mt-6 sm:mt-8">
-        {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
-              setCurrentIndex(index);
-            }}
-            className={cn(
-              "h-2 rounded-full transition-all duration-300",
-              index === currentIndex
-                ? "w-8 bg-[#A67C52]"
-                : "w-2 bg-gray-300 hover:bg-gray-400"
-            )}
-            aria-label={`الانتقال إلى الشهادة ${index + 1}`}
-          />
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -3266,7 +2589,11 @@ function Testimonials() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <TestimonialsCarousel />
+          <StyledCarousel
+            items={TESTIMONIAL_CAROUSEL_ITEMS}
+            variant="testimonial"
+            ariaLabel="آراء زبنائنا"
+          />
         </motion.div>
       </div>
     </section>

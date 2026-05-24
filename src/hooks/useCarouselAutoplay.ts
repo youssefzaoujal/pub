@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 
-/** Lance l’autoplay uniquement quand le carrousel est visible à l’écran */
 export function useCarouselAutoplay(
   enabled: boolean,
   onTick: () => void,

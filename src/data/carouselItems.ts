@@ -1,6 +1,6 @@
-import type { Carousel3DItem } from "@/components/design/Carousel3D";
+import type { NetworkItem } from "@/components/design/NetworkGrid";
 
-export const CLIENT_CAROUSEL_ITEMS: Carousel3DItem[] = [
+export const CLIENT_CAROUSEL_ITEMS: NetworkItem[] = [
   {
     id: "acces-immo",
     image: "/clients/acces-immo.webp",
@@ -67,7 +67,7 @@ export const CLIENT_CAROUSEL_ITEMS: Carousel3DItem[] = [
   },
 ];
 
-export const RESTAURANT_CAROUSEL_ITEMS: Carousel3DItem[] = [
+export const RESTAURANT_CAROUSEL_ITEMS: NetworkItem[] = [
   {
     id: "tramontana",
     image: "/clients/tramontana.jpg",
@@ -158,7 +158,7 @@ export const RESTAURANT_CAROUSEL_ITEMS: Carousel3DItem[] = [
   },
 ];
 
-export const TESTIMONIAL_CAROUSEL_ITEMS: Carousel3DItem[] = [
+export const TESTIMONIAL_CAROUSEL_ITEMS: NetworkItem[] = [
   {
     id: "hamid",
     title: "حميد رشدي",
