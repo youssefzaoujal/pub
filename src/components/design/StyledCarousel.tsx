@@ -141,8 +141,12 @@ export function StyledCarousel({
   const [index, setIndex] = useState(0);
   const [hoverPaused, setHoverPaused] = useState(false);
 
-  const maxIndex = Math.max(0, items.length - slidesToShow);
-  const slidePercent = 100 / slidesToShow;
+  const count = items.length;
+  const maxIndex = Math.max(0, count - slidesToShow);
+  /** Largeur de la piste = tous les slides (fix défilement au-delà de 3 cartes) */
+  const trackWidthPercent = (count / slidesToShow) * 100;
+  const slideWidthOnTrackPercent = 100 / count;
+  const offsetPercent = index * slideWidthOnTrackPercent;
 
   const goNext = useCallback(() => {
     setIndex((i) => (i >= maxIndex ? 0 : i + 1));
@@ -177,14 +181,15 @@ export function StyledCarousel({
       <div className="carousel-styled-viewport overflow-hidden rounded-2xl px-1">
         <motion.div
           className="flex"
-          animate={{ x: `-${index * slidePercent}%` }}
+          style={{ width: `${trackWidthPercent}%` }}
+          animate={{ x: `-${offsetPercent}%` }}
           transition={{ type: "spring", stiffness: 280, damping: 32 }}
         >
           {items.map((item) => (
             <div
               key={item.id}
               className="flex-shrink-0 box-border"
-              style={{ width: `${slidePercent}%` }}
+              style={{ width: `${slideWidthOnTrackPercent}%` }}
             >
               {variant === "testimonial" ? (
                 <TestimonialSlide item={item} />

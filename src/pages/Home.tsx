@@ -1303,16 +1303,21 @@ function VideoShowcase() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
-  
+  const calmPhone = usePerf() === "lite";
+
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-10, 10]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 1], calmPhone ? [0, 0] : [40, -40]);
+  const rotate = useTransform(scrollYProgress, [0, 1], calmPhone ? [0, 0] : [-4, 4]);
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    calmPhone ? [1, 1, 1] : [0.92, 1, 0.98]
+  );
 
   const toggleMute = () => {
     // Son toujours désactivé - pas de toggle
@@ -1348,47 +1353,33 @@ function VideoShowcase() {
         <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
           
           {/* --- RIGHT: THE VIDEO (PHONE STYLE) --- */}
-          <div className="order-1 lg:order-2 flex justify-center perspective-[2000px]">
+          <div
+            className={cn(
+              "order-1 lg:order-2 flex justify-center",
+              !calmPhone && "lg:perspective-[2000px]"
+            )}
+          >
             <motion.div
-              style={{ y, rotateY: rotate, scale }}
-              className="relative w-full max-w-[min(100%,320px)] sm:max-w-[380px] aspect-[9/16] rounded-[2rem] sm:rounded-[3rem] border-[6px] sm:border-8 border-gray-900 bg-gray-900 shadow-glow-lg z-20 group mx-auto ring-2 ring-amber-400/30"
-              initial={{ opacity: 0, scale: 0.8, rotateX: 20, y: 50 }}
+              style={calmPhone ? undefined : { y, rotateY: rotate, scale }}
+              className="relative w-full max-w-[min(100%,320px)] sm:max-w-[380px] aspect-[9/16] rounded-[2rem] sm:rounded-[3rem] border-[6px] sm:border-8 border-gray-900 bg-gray-900 shadow-glow-lg z-20 group mx-auto ring-2 ring-amber-400/30 will-change-auto"
+              initial={calmPhone ? { opacity: 0, y: 16 } : { opacity: 0, scale: 0.9, rotateX: 12, y: 40 }}
               whileInView={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
-              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              transition={{ duration: calmPhone ? 0.45 : 0.8, type: "spring", stiffness: calmPhone ? 120 : 100 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={calmPhone ? undefined : { scale: 1.02 }}
             >
               {/* Phone Notch Enhanced */}
-              <motion.div
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl z-30 flex items-center justify-center gap-2"
-                animate={{
-                  opacity: [0.8, 1, 0.8],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-              >
-                <div className="w-16 h-1 bg-gray-800 rounded-full"></div>
-                <motion.div
-                  className="w-1 h-1 bg-blue-500 rounded-full"
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                />
-              </motion.div>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl z-30 flex items-center justify-center gap-2">
+                <div className="w-16 h-1 bg-gray-800 rounded-full" />
+                <div className="w-1 h-1 bg-blue-500 rounded-full opacity-80" />
+              </div>
 
               {/* Video Container */}
               <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-gray-800 cursor-pointer group/video" onClick={togglePlay}>
                 <video
                   ref={videoRef}
                   src="/video.mp4"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover/video:scale-105"
+                  className="w-full h-full object-cover lg:transition-transform lg:duration-300 lg:group-hover/video:scale-105"
                   autoPlay
                   loop
                   muted
@@ -1428,21 +1419,9 @@ function VideoShowcase() {
                   {/* Hearts Floating Animation */}
                   <div className="flex flex-col gap-4">
                     {[1, 2, 3].map((i) => (
-                      <motion.div
+                      <div
                         key={i}
-                        className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg cursor-pointer"
-                        whileHover={{ scale: 1.3, rotate: 360 }}
-                        whileTap={{ scale: 0.9 }}
-                        animate={{
-                          y: [0, -8, 0],
-                          x: [0, i % 2 === 0 ? 3 : -3, 0],
-                        }}
-                        transition={{
-                          duration: 2 + i * 0.3,
-                          delay: i * 0.2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
+                        className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg"
                       >
                         <Heart
                           className="w-5 h-5 text-white transition-all"
@@ -1451,25 +1430,18 @@ function VideoShowcase() {
                             filter: i === 1 ? "drop-shadow(0 0 8px rgba(239,68,68,0.8))" : "none",
                           }}
                         />
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </div>
 
               </div>
 
-              {/* GLOWING BORDER ANIMATION Enhanced */}
-              <motion.div
-                className="absolute -inset-[3px] rounded-[3.2rem] bg-gradient-to-br from-[#A67C52] via-yellow-500 via-purple-500 to-[#A67C52] -z-10 opacity-60 blur-lg"
-                animate={{
-                  opacity: [0.4, 0.7, 0.4],
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+              <div
+                className={cn(
+                  "absolute -inset-[3px] rounded-[3.2rem] bg-gradient-to-br from-[#A67C52] via-yellow-500 to-[#A67C52] -z-10 blur-lg",
+                  calmPhone ? "opacity-45" : "opacity-60"
+                )}
               />
 
               {/* Floating Elements popping OUT of the phone */}
@@ -1477,56 +1449,32 @@ function VideoShowcase() {
                 className="absolute top-12 left-1 sm:top-20 sm:-left-12 md:-left-20 bg-white p-3 sm:p-5 rounded-2xl shadow-2xl z-40 max-w-[min(85vw,200px)] border-2 border-yellow-400/30"
                 initial={{ x: -100, opacity: 0, scale: 0.8 }}
                 whileInView={{ x: 0, opacity: 1, scale: 1 }}
-                whileHover={{ scale: 1.05, x: 5 }}
+                whileHover={calmPhone ? undefined : { scale: 1.05, x: 5 }}
                 transition={{ delay: 0.5, type: "spring" }}
                 viewport={{ once: true }}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <motion.div
-                    className="w-2.5 h-2.5 rounded-full bg-green-500"
-                    animate={{
-                      scale: [1, 1.3, 1],
-                      opacity: [1, 0.7, 1],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                    }}
-                  />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
                   <span className="text-xs font-bold text-gray-800">Live Reaction</span>
                 </div>
                 <p className="text-sm font-arabic text-gray-600 leading-tight" dir="rtl">
                   "شوف التفاعل ديال الناس مع الإشهار!"
                 </p>
                 {/* Arrow pointing to phone */}
-                <motion.div
-                  className="absolute -right-3 top-1/2 text-white"
-                  animate={{
-                    x: [0, 5, 0],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                  }}
-                >
-                  →
-                </motion.div>
+                {!calmPhone && (
+                  <motion.div
+                    className="absolute -right-3 top-1/2 text-white"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.div>
+                )}
               </motion.div>
 
-              {/* Additional glow orb */}
-              <motion.div
-                className="absolute bottom-20 right-0 sm:bottom-32 sm:-right-10 md:-right-16 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-yellow-400 to-[#A67C52] rounded-full blur-3xl opacity-50 -z-10"
-                animate={{
-                  scale: [1, 1.4, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+              {!calmPhone && (
+                <div className="absolute bottom-20 right-0 sm:bottom-32 sm:-right-10 md:-right-16 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-yellow-400 to-[#A67C52] rounded-full blur-3xl opacity-40 -z-10 pointer-events-none" />
+              )}
             </motion.div>
           </div>
 
@@ -1538,24 +1486,10 @@ function VideoShowcase() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <motion.div
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#A67C52]/20 to-purple-600/20 border border-[#A67C52]/30 text-gray-900 text-sm font-bold mb-6 shadow-lg backdrop-blur-sm"
-                whileHover={{ scale: 1.05 }}
-              >
-                <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                >
-                  <Smartphone className="w-5 h-5" />
-                </motion.div>
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#A67C52]/20 to-purple-600/20 border border-[#A67C52]/30 text-gray-900 text-sm font-bold mb-6 shadow-lg backdrop-blur-sm">
+                <Smartphone className="w-5 h-5 shrink-0" />
                 <span>شاهد بنفسك</span>
-              </motion.div>
+              </div>
 
               <div className="overflow-visible mb-8">
                 <motion.h2
@@ -2015,7 +1949,7 @@ function ROICalculator() {
                     <div>
                         <h4 className="text-white font-bold font-arabic mb-1">توفير هائل</h4>
                         <p className="text-gray-400 text-sm font-arabic leading-relaxed">
-                          مع نفس الميزانية، كتقدر توصل لـ <span className="text-white font-bold">15 مرة</span> أكثر من الناس مقارنة بالفلاير.
+                          مع نفس الميزانية، كتقدر توصل لجمهور أكبر بكثير مقارنة بالفلاير التقليدي.
                         </p>
                     </div>
                  </div>
