@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCarouselAutoplay } from "@/hooks/useCarouselAutoplay";
 import type { NetworkItem } from "@/components/design/NetworkGrid";
 
 type StyledCarouselProps = {
@@ -13,41 +13,9 @@ type StyledCarouselProps = {
   className?: string;
 };
 
-function useSlidesToShow() {
-  const [slides, setSlides] = useState(1);
-
-  useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth;
-      if (w < 640) setSlides(1);
-      else if (w < 1024) setSlides(2);
-      else setSlides(3);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  return slides;
-}
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  return reduced;
-}
-
 function PartnerSlide({ item }: { item: NetworkItem }) {
   return (
-    <article className="glass-card h-full rounded-2xl overflow-hidden border border-[#A67C52]/15 shadow-md mx-1.5 sm:mx-2">
+    <article className="glass-card h-full rounded-2xl overflow-hidden border border-[#A67C52]/15 shadow-md">
       {item.image && (
         <div className="relative aspect-[4/3] bg-gradient-to-b from-gray-50 to-white overflow-hidden">
           <img
@@ -62,7 +30,7 @@ function PartnerSlide({ item }: { item: NetworkItem }) {
           />
           {item.tag && (
             <span
-              className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#A67C52]/90 text-white font-arabic"
+              className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-bold bg-[#A67C52]/90 text-white font-arabic"
               dir="rtl"
             >
               {item.tag}
@@ -70,7 +38,7 @@ function PartnerSlide({ item }: { item: NetworkItem }) {
           )}
           {item.rating != null && (
             <span
-              className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/95 text-gray-900 shadow flex items-center gap-1 font-arabic"
+              className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-white/95 text-gray-900 shadow flex items-center gap-1 font-arabic"
               dir="rtl"
             >
               <Star size={11} className="fill-amber-400 text-amber-400 shrink-0" />
@@ -96,7 +64,7 @@ function PartnerSlide({ item }: { item: NetworkItem }) {
 function TestimonialSlide({ item }: { item: NetworkItem }) {
   return (
     <article
-      className="glass-card h-full min-h-[220px] rounded-2xl border border-amber-200/50 bg-gradient-to-br from-white via-amber-50/70 to-[#f8f5f2] p-5 sm:p-6 flex flex-col shadow-md mx-1.5 sm:mx-2"
+      className="glass-card h-full min-h-[220px] rounded-2xl border border-amber-200/50 bg-gradient-to-br from-white via-amber-50/70 to-[#f8f5f2] p-5 sm:p-6 flex flex-col shadow-md"
       dir="rtl"
     >
       {item.rating != null && (
@@ -132,64 +100,63 @@ export function StyledCarousel({
   items,
   variant = "partner",
   ariaLabel,
-  autoplayMs = 4500,
+  autoplayMs = 5000,
   className,
 }: StyledCarouselProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const slidesToShow = useSlidesToShow();
-  const [index, setIndex] = useState(0);
-  const [hoverPaused, setHoverPaused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const count = items.length;
-  const maxIndex = Math.max(0, count - slidesToShow);
-  /** Largeur de la piste = tous les slides (fix défilement au-delà de 3 cartes) */
-  const trackWidthPercent = (count / slidesToShow) * 100;
-  const slideWidthOnTrackPercent = 100 / count;
-  const offsetPercent = index * slideWidthOnTrackPercent;
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: items.length > 1,
+      align: "start",
+      direction: "rtl",
+      slidesToScroll: 1,
+      containScroll: "trimSnaps",
+    },
+    [Autoplay({ delay: autoplayMs, stopOnInteraction: true, stopOnMouseEnter: true })]
+  );
 
-  const goNext = useCallback(() => {
-    setIndex((i) => (i >= maxIndex ? 0 : i + 1));
-  }, [maxIndex]);
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi]
+  );
 
-  const goPrev = useCallback(() => {
-    setIndex((i) => (i <= 0 ? maxIndex : i - 1));
-  }, [maxIndex]);
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
 
   useEffect(() => {
-    setIndex((i) => Math.min(i, maxIndex));
-  }, [maxIndex]);
-
-  const canAutoplay =
-    items.length > slidesToShow && maxIndex > 0 && !prefersReducedMotion;
-
-  // Auto dès que le carrousel est monté ; pause au survol souris uniquement
-  useCarouselAutoplay(canAutoplay && !hoverPaused, goNext, autoplayMs);
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect]);
 
   if (items.length === 0) return null;
 
+  const showControls = items.length > 1;
+
   return (
-    <div
-      ref={rootRef}
-      className={cn("carousel-styled relative w-full", className)}
-      role="region"
+    <section
+      className={cn("carousel-embla relative w-full", className)}
       aria-label={ariaLabel}
       aria-roledescription="carousel"
-      onMouseEnter={() => setHoverPaused(true)}
-      onMouseLeave={() => setHoverPaused(false)}
     >
-      <div className="carousel-styled-viewport overflow-hidden rounded-2xl px-1">
-        <motion.div
-          className="flex"
-          style={{ width: `${trackWidthPercent}%` }}
-          animate={{ x: `-${offsetPercent}%` }}
-          transition={{ type: "spring", stiffness: 280, damping: 32 }}
-        >
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex touch-pan-y">
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex-shrink-0 box-border"
-              style={{ width: `${slideWidthOnTrackPercent}%` }}
+              className="min-w-0 shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/3 pl-3 sm:pl-4"
             >
               {variant === "testimonial" ? (
                 <TestimonialSlide item={item} />
@@ -198,48 +165,56 @@ export function StyledCarousel({
               )}
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
-      {maxIndex > 0 && (
+      {showControls && (
         <>
           <button
             type="button"
-            onClick={goPrev}
-            className="carousel-styled-nav carousel-styled-nav--prev"
-            aria-label="الشريحة السابقة"
+            onClick={scrollPrev}
+            className="carousel-embla-btn carousel-embla-btn--prev"
+            aria-label="السابق"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
           </button>
           <button
             type="button"
-            onClick={goNext}
-            className="carousel-styled-nav carousel-styled-nav--next"
-            aria-label="الشريحة التالية"
+            onClick={scrollNext}
+            className="carousel-embla-btn carousel-embla-btn--next"
+            aria-label="التالي"
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
           </button>
 
-          <div className="flex justify-center gap-2 mt-6 sm:mt-8" role="tablist" aria-label="مؤشرات الشرائح">
-            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+          <div
+            className="flex justify-center gap-2 mt-6 flex-wrap"
+            role="tablist"
+            aria-label="مؤشرات"
+          >
+            {scrollSnaps.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 role="tab"
-                aria-selected={i === index}
+                aria-selected={i === selectedIndex}
                 aria-label={`الشريحة ${i + 1}`}
-                onClick={() => setIndex(i)}
-                className={cn(
-                  "h-2 rounded-full transition-all duration-300",
-                  i === index
-                    ? "w-8 bg-[#A67C52]"
-                    : "w-2 bg-[#A67C52]/25 hover:bg-[#A67C52]/45"
-                )}
-              />
+                onClick={() => scrollTo(i)}
+                className="carousel-embla-dot"
+              >
+                <span
+                  className={cn(
+                    "block h-2 rounded-full transition-all duration-300",
+                    i === selectedIndex
+                      ? "w-8 bg-[#A67C52]"
+                      : "w-2 bg-[#A67C52]/30"
+                  )}
+                />
+              </button>
             ))}
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

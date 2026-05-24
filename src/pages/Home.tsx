@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { DeferredMount } from "@/components/DeferredMount";
 import { StyledCarousel } from "@/components/design/StyledCarousel";
+import { HeaderMetrics } from "@/components/HeaderMetrics";
 import { usePerf } from "@/contexts/PerformanceContext";
 import {
   CLIENT_CAROUSEL_ITEMS,
@@ -45,7 +46,8 @@ const FOOTER_LINKS: { id: string; labelKey: TranslationPath }[] = [
 function WhatsAppFloat() {
   const [isHovered, setIsHovered] = useState(false);
   const mode = usePerf();
-  const pulseCount = mode === "full" ? 2 : 0;
+  const calm = mode === "lite";
+  const pulseCount = calm ? 0 : 2;
 
   return (
     <motion.a
@@ -55,8 +57,8 @@ function WhatsAppFloat() {
       className="fixed safe-bottom safe-right bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-50 group"
       initial={{ scale: 0, rotate: -180 }}
       animate={{ scale: 1, rotate: 0 }}
-      whileHover={{ scale: 1.2, rotate: 15 }}
-      whileTap={{ scale: 0.9 }}
+      whileHover={calm ? { scale: 1.05 } : { scale: 1.15 }}
+      whileTap={{ scale: 0.95 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       transition={{ 
@@ -90,35 +92,37 @@ function WhatsAppFloat() {
         ))}
         
         {/* Main button with glow */}
-        <motion.div 
-          className="relative bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 text-white p-3 sm:p-4 md:p-5 rounded-full shadow-2xl"
-          animate={{
-            boxShadow: isHovered 
-              ? ["0 0 20px rgba(34,197,94,0.5)", "0 0 60px rgba(34,197,94,0.8)", "0 0 20px rgba(34,197,94,0.5)"]
-              : ["0 0 20px rgba(34,197,94,0.3)", "0 0 40px rgba(34,197,94,0.5)", "0 0 20px rgba(34,197,94,0.3)"],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-          }}
+        <motion.div
+          className="relative bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 text-white p-3 sm:p-4 rounded-full shadow-2xl"
+          animate={
+            calm
+              ? undefined
+              : {
+                  boxShadow: isHovered
+                    ? [
+                        "0 0 20px rgba(34,197,94,0.5)",
+                        "0 0 60px rgba(34,197,94,0.8)",
+                        "0 0 20px rgba(34,197,94,0.5)",
+                      ]
+                    : [
+                        "0 0 20px rgba(34,197,94,0.3)",
+                        "0 0 40px rgba(34,197,94,0.5)",
+                        "0 0 20px rgba(34,197,94,0.3)",
+                      ],
+                }
+          }
+          transition={calm ? undefined : { duration: 1.5, repeat: Infinity }}
         >
           <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
           </svg>
           
           {/* Notification badge */}
-          <motion.div
-            className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold"
-            animate={{
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-            }}
-          >
-            1
-          </motion.div>
+          {!calm && (
+            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+              1
+            </div>
+          )}
           
           {/* Floating text */}
           <AnimatePresence>
@@ -312,6 +316,18 @@ function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.toggleAttribute(
+      "data-mobile-menu-open",
+      mobileMenuOpen
+    );
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.documentElement.removeAttribute("data-mobile-menu-open");
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   const menuItems = [...NAV_ITEMS].reverse();
 
   const scrollToSection = (sectionId: string) => {
@@ -331,8 +347,9 @@ function Navigation() {
 
   return (
     <motion.nav
+      data-header-nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 safe-top-nav",
         isScrolled
           ? "bg-white/80 backdrop-blur-2xl shadow-glow border-b border-[#A67C52]/15"
           : "bg-gradient-to-b from-white/40 to-transparent backdrop-blur-sm"
@@ -523,10 +540,12 @@ function Navigation() {
             transition={{ delay: 0.5, type: "spring" }}
           >
             <motion.button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="relative p-2 text-gray-700 hover:text-primary rounded-lg transition-colors"
-              whileHover={{ scale: 1.1, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
+              className="relative flex items-center justify-center min-h-[44px] min-w-[44px] text-gray-700 hover:text-primary rounded-lg transition-colors"
+              whileTap={{ scale: 0.95 }}
+              aria-expanded={mobileMenuOpen}
+              aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
             >
               <AnimatePresence mode="wait">
                 {mobileMenuOpen ? (
@@ -556,17 +575,28 @@ function Navigation() {
         </div>
       </div>
 
-      {/* Mobile Menu with enhanced animations */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-white/95 backdrop-blur-xl shadow-2xl border-t border-white/20 overflow-hidden"
-          >
-            <div className="container mx-auto px-4 py-6 flex flex-col gap-2">
+          <>
+            <motion.button
+              type="button"
+              aria-label="إغلاق القائمة"
+              className="md:hidden fixed inset-0 z-[55] bg-black/40"
+              style={{ top: "var(--header-nav)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="md:hidden fixed inset-x-0 bottom-0 z-[56] bg-white/98 backdrop-blur-xl shadow-2xl border-t border-[#A67C52]/15 overflow-y-auto overscroll-contain"
+              style={{ top: "var(--header-nav)" }}
+            >
+            <div className="container mx-auto px-4 py-6 flex flex-col gap-1 max-h-full">
               {menuItems.map((item, i) => (
                 <motion.a
                   key={item.id}
@@ -576,7 +606,7 @@ function Navigation() {
                     setMobileMenuOpen(false);
                   }}
                   className={cn(
-                    "text-lg text-gray-700 hover:text-primary px-4 py-3 rounded-xl hover:bg-primary/10 transition-all relative overflow-hidden group cursor-pointer",
+                    "text-lg text-gray-700 hover:text-primary px-4 py-3.5 rounded-xl hover:bg-primary/10 transition-all relative overflow-hidden group cursor-pointer min-h-[48px] flex items-center",
                     "font-arabic"
                   )}
                   dir="rtl"
@@ -605,7 +635,7 @@ function Navigation() {
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className={cn(
-                  "mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#A67C52] to-yellow-700 text-white font-bold rounded-xl overflow-hidden relative group",
+                  "mt-4 w-full px-6 py-3.5 min-h-[48px] bg-gradient-to-r from-[#A67C52] to-yellow-700 text-white font-bold rounded-xl overflow-hidden relative group",
                   "font-arabic"
                 )}
                 initial={{ opacity: 0, y: 20 }}
@@ -636,6 +666,7 @@ function Navigation() {
               </motion.button>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.nav>
@@ -740,10 +771,10 @@ function StatsSection() {
 
 function Hero() {
   const { t } = useLanguage();
+  const calm = usePerf() === "lite";
   const containerRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
-  // Parallaxe douce pour le fond
-  const yParallax = useTransform(scrollY, [0, 1000], [0, 300]);
+  const yParallax = useTransform(scrollY, [0, 1000], calm ? [0, 0] : [0, 120]);
 
   // Image stable - pas d'effet 3D
   const rotateX = "0deg";
@@ -770,7 +801,7 @@ function Hero() {
   return (
     <section
       ref={containerRef}
-      className="section-anchor relative min-h-[100dvh] flex items-start sm:items-center pt-[var(--header-total)] lg:pt-[var(--header-nav)] overflow-hidden bg-kraft-radial"
+      className="section-anchor relative min-h-[calc(100dvh-var(--header-total))] sm:min-h-[100dvh] flex items-start sm:items-center pt-[var(--header-total)] lg:pt-[var(--header-nav)] overflow-hidden bg-kraft-radial mobile-contain"
       id="hero"
       data-id="الرئيسية"
     >
@@ -781,7 +812,7 @@ function Hero() {
 
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[linear-gradient(rgba(166,124,82,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(166,124,82,0.12)_1px,transparent_1px)] bg-[size:48px_48px]"
-        style={{ animation: "gridMove 24s linear infinite" }}
+        style={calm ? undefined : { animation: "gridMove 24s linear infinite" }}
       />
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-20 grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-2 items-center w-full min-w-0 py-6 sm:py-10 md:py-12 lg:py-0">
@@ -829,64 +860,11 @@ function Hero() {
             </button>
           </motion.div>
 
-          {/* Badge ULTRA ENHANCED */}
-          <motion.div variants={textReveal} className="mb-8 inline-block relative">
-            {/* Glow effect behind badge */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-yellow-400/50 via-orange-400/50 to-yellow-400/50 blur-xl rounded-full -z-10"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <motion.span
-              className="relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-yellow-50/90 via-orange-50/90 to-yellow-50/90 text-yellow-900 text-sm font-bold border-2 border-yellow-300/60 shadow-[0_8px_30px_-8px_rgba(234,179,8,0.5)] backdrop-blur-xl overflow-hidden group"
-              whileHover={{ scale: 1.05, y: -2 }}
-            >
-              {/* Shine sweep */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent"
-                animate={{
-                  x: ["-100%", "200%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.div
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              >
-                <Sparkles className="w-4 h-4 text-yellow-600 relative z-10" />
-              </motion.div>
-              <span className="relative z-10">{t("hero.badge")}</span>
-              {/* Pulse rings */}
-              <motion.div
-                className="absolute inset-0 rounded-full border-2 border-yellow-400/30"
-                animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.5, 0, 0.5],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-              />
-            </motion.span>
+          <motion.div variants={textReveal} className="mb-6 sm:mb-8 inline-block relative">
+            <span className="relative inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-yellow-50/90 via-orange-50/90 to-yellow-50/90 text-yellow-900 text-xs sm:text-sm font-bold border-2 border-yellow-300/60 shadow-md backdrop-blur-xl font-arabic">
+              <Sparkles className="w-4 h-4 text-yellow-600 shrink-0" />
+              {t("hero.badge")}
+            </span>
           </motion.div>
 
           {/* Titre + slogan — centrés */}
@@ -938,7 +916,7 @@ function Hero() {
         </motion.div>
 
         {/* --- RIGHT: THE "WOW" 3D SINGLE IMAGE CONTAINER --- */}
-        <div className="lg:col-span-7 relative flex justify-center items-center max-h-[55vh] sm:max-h-[65vh] lg:max-h-none lg:h-[min(900px,90vh)] z-10 mt-6 sm:mt-10 lg:mt-0 perspective-origin-center w-full min-w-0">
+        <div className="lg:col-span-7 relative flex justify-center items-center max-h-[48vh] sm:max-h-[58vh] lg:max-h-none lg:h-[min(900px,90vh)] z-10 mt-4 sm:mt-10 lg:mt-0 w-full min-w-0 overflow-hidden">
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -952,17 +930,19 @@ function Hero() {
              />
 
 
-            <motion.div
-              className="absolute -inset-4 rounded-[40px] bg-gradient-to-r from-amber-400/40 via-[#A67C52]/50 to-amber-400/40 blur-2xl -z-10"
-              animate={{ opacity: [0.4, 0.75, 0.4], scale: [0.98, 1.02, 0.98] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
+            {!calm && (
+              <motion.div
+                className="absolute -inset-4 rounded-[40px] bg-gradient-to-r from-amber-400/40 via-[#A67C52]/50 to-amber-400/40 blur-2xl -z-10"
+                animate={{ opacity: [0.4, 0.75, 0.4], scale: [0.98, 1.02, 0.98] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+            )}
 
             {/* LE CADRE DE VERRE PRINCIPAL */}
             <div className="absolute inset-0 rounded-[30px] sm:rounded-[40px] md:rounded-[50px] bg-gradient-to-br from-white/50 via-white/15 to-white/5 backdrop-blur-[50px] border-[4px] sm:border-[6px] md:border-[8px] border-white/60 shadow-glow-lg overflow-hidden z-20 transform-gpu ring-1 ring-white/40">
 
               {/* --- L'IMAGE UNIQUE STABLE --- */}
-              <div className="absolute inset-[-5%] z-10">
+              <div className="absolute inset-0 z-10">
                  <img
                   src={heroImage}
                   alt="Présentation App"
@@ -991,36 +971,12 @@ function Hero() {
 
 
             {/* ÉLÉMENTS FLOTTANTS AUTOUR DU CADRE */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0, x: -50 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                x: 0,
-                y: [0, -10, 0],
-              }}
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{
-                opacity: { delay: 1.8, duration: 0.8 },
-                scale: { delay: 1.8, duration: 0.8 },
-                x: { delay: 1.8, type: "spring", stiffness: 200 },
-                y: {
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }}
-              style={{ transform: "translateZ(100px)" }}
-              className="absolute -top-4 -right-2 sm:-top-8 sm:-right-8 glass-card px-3 sm:px-4 py-2 rounded-full shadow-glow z-40 flex items-center gap-2 border-emerald-300/50"
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              >
-                <Target className="w-5 h-5 text-emerald-600" />
-              </motion.div>
-              <span className="font-bold text-emerald-700 text-sm">Ciblage Précis</span>
-            </motion.div>
+            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 glass-card px-3 py-2 rounded-full shadow-md z-40 flex items-center gap-2 border-emerald-300/50 max-w-[calc(100%-1rem)]">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 shrink-0" />
+              <span className="font-bold text-emerald-700 text-xs sm:text-sm whitespace-nowrap">
+                Ciblage Précis
+              </span>
+            </div>
 
           </motion.div>
         </div>
@@ -1123,16 +1079,16 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
 };
 
 function About() {
+  const calm = usePerf() === "lite";
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  // Parallax effects for images
-  const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]); // Image de gauche (monte)
-  const y2 = useTransform(scrollYProgress, [0, 1], [-50, 50]);   // Image de droite (descend)
-  const rotate = useTransform(scrollYProgress, [0, 1], [-5, 5]); // Rotation subtile
+  const y1 = useTransform(scrollYProgress, [0, 1], calm ? [0, 0] : [60, -60]);
+  const y2 = useTransform(scrollYProgress, [0, 1], calm ? [0, 0] : [-30, 30]);
+  const rotate = useTransform(scrollYProgress, [0, 1], calm ? [0, 0] : [-3, 3]);
 
   const aboutImages = [
     {
@@ -1160,20 +1116,22 @@ function About() {
       <div className="absolute inset-0 opacity-[0.25] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')]" />
 
       {/* --- ELÉMENTS DÉCORATIFS ARRIÈRE-PLAN --- */}
-      <motion.div 
-        style={{ y: y2 }}
-        className="absolute top-20 left-[-5%] text-[8rem] sm:text-[16rem] lg:text-[28rem] font-black text-[#A67C52]/5 font-arabic select-none z-0 leading-none pointer-events-none"
-      >
-        ف
-      </motion.div>
-      <div className="absolute top-1/2 right-[-10%] w-[min(100vw,600px)] h-[min(100vw,600px)] bg-yellow-300/20 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
+      {!calm && (
+        <motion.div
+          style={{ y: y2 }}
+          className="absolute top-20 -left-4 sm:left-[-5%] text-[6rem] sm:text-[16rem] lg:text-[28rem] font-black text-[#A67C52]/5 font-arabic select-none z-0 leading-none pointer-events-none"
+        >
+          ف
+        </motion.div>
+      )}
+      <div className="absolute top-1/2 right-0 w-[min(85%,420px)] h-[min(85%,420px)] sm:right-[-10%] sm:w-[min(100%,600px)] sm:h-[min(100%,600px)] bg-yellow-300/20 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         
         <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-20 items-center">
           
           {/* --- LEFT: COLLAGE IMAGES (PARALLAX) --- */}
-          <div className="relative min-h-[360px] sm:min-h-[420px] md:h-[500px] lg:h-[600px] w-full max-w-lg mx-auto lg:max-w-none flex flex-col sm:block items-center justify-center gap-4 sm:gap-0 overflow-visible sm:overflow-hidden">
+          <div className="relative min-h-[320px] sm:min-h-[420px] md:h-[500px] lg:h-[600px] w-full max-w-lg mx-auto lg:max-w-none flex flex-col sm:block items-center justify-center gap-4 sm:gap-0 overflow-hidden">
              {/* Cercles décoratifs derrière */}
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-[min(85vw,400px)] h-[min(85vw,400px)] border border-[#A67C52]/20 rounded-full animate-[spin_60s_linear_infinite]" />
@@ -1226,7 +1184,7 @@ function About() {
               
               <div className="space-y-4 sm:space-y-6 text-base sm:text-lg md:text-xl text-gray-600 font-arabic leading-relaxed sm:leading-loose relative">
                 {/* Ligne verticale décorative */}
-                <div className="absolute right-[-20px] top-2 bottom-2 w-1 bg-gradient-to-b from-[#A67C52] to-transparent rounded-full opacity-30"></div>
+                <div className="absolute right-0 sm:right-[-12px] top-2 bottom-2 w-1 bg-gradient-to-b from-[#A67C52] to-transparent rounded-full opacity-30" />
                 
                 <p>
                   <BrandName className="font-bold text-gray-900 text-2xl" pubClassName="text-gray-900" /> هي ثورة فمجال الإشهار المحلي. الفكرة ديالنا نابعة من الواقع المغربي: كيفاش نوصلو رسالتك لقلب الدار، ماشي غير للزنقة.
@@ -1446,7 +1404,7 @@ function VideoShowcase() {
 
               {/* Floating Elements popping OUT of the phone */}
               <motion.div
-                className="absolute top-12 left-1 sm:top-20 sm:-left-12 md:-left-20 bg-white p-3 sm:p-5 rounded-2xl shadow-2xl z-40 max-w-[min(85vw,200px)] border-2 border-yellow-400/30"
+                className="hidden sm:block absolute top-12 left-1 sm:top-20 sm:-left-12 md:-left-20 bg-white p-3 sm:p-5 rounded-2xl shadow-2xl z-40 max-w-[min(85vw,200px)] border-2 border-yellow-400/30"
                 initial={{ x: -100, opacity: 0, scale: 0.8 }}
                 whileInView={{ x: 0, opacity: 1, scale: 1 }}
                 whileHover={calmPhone ? undefined : { scale: 1.05, x: 5 }}
@@ -2895,7 +2853,8 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 // === MAIN APP ===
 export default function LandingPage() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative promo-theme">
+    <div className="min-h-screen overflow-x-hidden relative promo-theme mobile-contain">
+      <HeaderMetrics />
       <ScrollProgress />
       <Navigation />
       <PromoBar />
