@@ -6,7 +6,6 @@ interface SectionHeadingProps {
   subtitle?: string;
   className?: string;
   align?: "left" | "center" | "right";
-  isArabic?: boolean;
 }
 
 export function SectionHeading({ 
@@ -14,11 +13,10 @@ export function SectionHeading({
   subtitle, 
   className, 
   align = "center",
-  isArabic = false
 }: SectionHeadingProps) {
   return (
-    <div className={cn(
-      "mb-12 md:mb-16", 
+    <div       className={cn(
+      "mb-8 sm:mb-12 md:mb-16", 
       align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left",
       className
     )}>
@@ -28,9 +26,9 @@ export function SectionHeading({
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className={cn(
-            "text-primary font-bold tracking-widest uppercase text-sm md:text-base block mb-2",
-            isArabic && "font-arabic"
+            "text-primary font-bold tracking-widest uppercase text-sm md:text-base block mb-2 font-arabic"
           )}
+          dir="rtl"
         >
           {subtitle}
         </motion.span>
@@ -40,9 +38,9 @@ export function SectionHeading({
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className={cn(
-          "text-3xl md:text-5xl font-extrabold text-foreground leading-tight",
-          isArabic && "font-arabic"
+          "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight font-arabic"
         )}
+        dir="rtl"
       >
         {title}
       </motion.h2>

@@ -1,0 +1,202 @@
+import type { Carousel3DItem } from "@/components/design/Carousel3D";
+
+export const CLIENT_CAROUSEL_ITEMS: Carousel3DItem[] = [
+  {
+    id: "acces-immo",
+    image: "/clients/acces-immo.webp",
+    imageFit: "cover",
+    title: "Acces Immo Tanger",
+    tag: "وكالة عقارية",
+    subtitle: "طنجة · كراء، بيع ومحلات مهنية",
+  },
+  {
+    id: "castle-agency",
+    image: "/clients/castle-agency.jpg",
+    imageFit: "cover",
+    title: "Castle Agency Tanger",
+    tag: "وكالة عقارية",
+    subtitle: "طنجة · شقق، فلل ومحلات للكراء والبيع",
+  },
+  {
+    id: "mbi-invest",
+    image: "/clients/mbi-invest.jpg",
+    imageFit: "cover",
+    title: "MBI Invest",
+    tag: "عقار تجاري",
+    subtitle: "طنجة · محلات، مكاتب ومساحات مهنية",
+  },
+  {
+    id: "patisserie-al-fath",
+    image: "/clients/patisserie-al-fath.jpg",
+    imageFit: "cover",
+    title: "Pâtisserie Al Fath",
+    tag: "حلويات",
+    subtitle: "92 شارع أنفا، طنجة · معجنات وحلويات",
+  },
+  {
+    id: "jimmys-fitness",
+    image: "/clients/jimmys-fitness.jpg",
+    imageFit: "cover",
+    title: "Jimmy's Fitness",
+    tag: "قاعة رياضية",
+    subtitle: "طنجة · لياقة بدنية وتدريب",
+  },
+  {
+    id: "needsport",
+    image: "/clients/needsport.jpg",
+    imageFit: "contain",
+    title: "Need Sport Gym",
+    tag: "قاعة رياضية",
+    subtitle: "طنجة · صالة رياضية ومعدات حديثة",
+  },
+  {
+    id: "budoclub",
+    image: "/clients/budoclub.jpg",
+    imageFit: "contain",
+    title: "BudoClub Tanger",
+    tag: "رياضة وفنون قتالية",
+    subtitle: "طنجة · فنون قتالية ودفاع عن النفس",
+  },
+  {
+    id: "adrigym",
+    image: "/clients/adrigym.jpg",
+    imageFit: "cover",
+    title: "Adrigym",
+    tag: "قاعة رياضية",
+    subtitle: "تانجا مول هيلتون، طنجة · لياقة وتمارين",
+  },
+];
+
+export const RESTAURANT_CAROUSEL_ITEMS: Carousel3DItem[] = [
+  {
+    id: "tramontana",
+    image: "/clients/tramontana.jpg",
+    title: "Tramontana",
+    tag: "مطعم",
+    subtitle: "شارع مولاي الرشيد، مجمع عايدة فيلاج، طنجة",
+    rating: 4.9,
+  },
+  {
+    id: "tajino",
+    image: "/clients/tajino.jpg",
+    title: "Tajino",
+    tag: "مطبخ مغربي",
+    subtitle: "10 شارع عبد الله الحبتي، طنجة",
+    rating: 4.8,
+  },
+  {
+    id: "pizzeria-les-amis",
+    image: "/clients/pizzeria-les-amis.jpg",
+    title: "Pizzeria Les Amis",
+    tag: "مطعم",
+    subtitle: "طريق الركايع، طنجة",
+    rating: 4.7,
+  },
+  {
+    id: "pomodoro",
+    image: "/clients/pomodoro.jpg",
+    title: "Pomod'oro Tanger",
+    tag: "مطعم",
+    subtitle: "شارع مولاي إسماعيل، طنجة",
+    rating: 4.8,
+  },
+  {
+    id: "anber",
+    image: "/clients/anber-tanger.jpg",
+    title: "Anber Tanger",
+    tag: "مطبخ مغربي فاخر",
+    subtitle: "مالاباتا، طنجة",
+    rating: 4.9,
+  },
+  {
+    id: "la-muralla",
+    image: "/clients/la-muralla.jpg",
+    title: "La Muralla",
+    tag: "مطبخ على السطح",
+    subtitle: "القصبة، طنجة",
+    rating: 4.8,
+  },
+  {
+    id: "safran-koya",
+    image: "/clients/safran-koya.jpg",
+    title: "Safran by Kôya",
+    tag: "مطعم",
+    subtitle: "تانجا مارينا باي، طنجة",
+    rating: 4.9,
+  },
+  {
+    id: "saveur-poisson",
+    image: "/clients/saveur-poisson.jpg",
+    title: "Saveur de Poisson",
+    tag: "مأكولات بحرية",
+    subtitle: "2 Escalier Waller، طنجة",
+    rating: 4.9,
+  },
+  {
+    id: "ahlen",
+    image: "/clients/restaurant-ahlen.jpg",
+    title: "Restaurant Ahlen",
+    tag: "مطبخ مغربي",
+    subtitle: "8 شارع البريد، طنجة",
+    rating: 4.7,
+  },
+  {
+    id: "nommos",
+    image: "/clients/nommos.jpg",
+    title: "NOMMOS",
+    tag: "مطبخ متوسطي",
+    subtitle: "خليج طنجة · عروض حية",
+    rating: 4.8,
+  },
+  {
+    id: "casa-jose",
+    image: "/clients/casa-jose.jpg",
+    title: "Casa José",
+    tag: "مطبخ إسباني",
+    subtitle: "طنجة · مأكولات بحرية",
+    rating: 4.8,
+  },
+];
+
+export const TESTIMONIAL_CAROUSEL_ITEMS: Carousel3DItem[] = [
+  {
+    id: "hamid",
+    title: "حميد رشدي",
+    tag: "مقهى الوردة",
+    excerpt:
+      "خدمة مزيانة بزاف، الناس كاتعرف على العرض ديالي وحتا الطلب زاد. أنا راضي بزاف ومستامر معاهم.",
+    rating: 5,
+  },
+  {
+    id: "sara",
+    title: "سارة العلمي",
+    tag: "صالون تجميل",
+    excerpt:
+      "الإشهار ديالي وصل لنساء من الحي، وبدات نحصل على زبناء جدد. طريقة بسيطة وفعالة.",
+    rating: 5,
+  },
+  {
+    id: "youssef",
+    title: "يوسف بلمهدي",
+    tag: "مخبز حديث",
+    excerpt:
+      "كنت متشكك في البداية، ولكن النتائج كانت مذهلة. التكلفة مناسبة والوصول كبير.",
+    rating: 5,
+  },
+  {
+    id: "salon",
+    title: "صاحبة صالون تجميل",
+    tag: "طنجة",
+    excerpt:
+      "عجبني بزاف الاستهداف ديال المنطقة، حسّيت الإعلان ديالي كيوصل مباشرة للناس اللي قريبين مني.",
+    rating: 5,
+  },
+  {
+    id: "boulanger",
+    title: "صاحب مخبزة",
+    tag: "طنجة",
+    excerpt:
+      "ما كنتش متأكد فالأول، ولكن من بعد الخدمة بان ليا الفرق فعدد الزبناء. طريقة ذكية للإشهار المحلي.",
+    rating: 5,
+  },
+];

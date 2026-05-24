@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LanguageToggle } from "./LanguageToggle";
 import { cn } from "@/lib/utils";
 
 export function Navigation() {
@@ -42,7 +41,10 @@ export function Navigation() {
               <div className="bg-primary p-2 rounded-lg text-white group-hover:scale-110 transition-transform">
                 <ShoppingBag className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <span className="text-xl md:text-2xl font-bold font-latin tracking-tight">
+              <span
+                dir="ltr"
+                className="text-xl md:text-2xl font-bold font-latin tracking-tight whitespace-nowrap"
+              >
                 F'Yedk <span className="text-primary">Pub</span>
               </span>
             </div>
@@ -59,7 +61,6 @@ export function Navigation() {
                 {link.label}
               </a>
             ))}
-            <LanguageToggle />
             <Button className="bg-primary text-white hover:bg-primary/90 rounded-full px-6 shadow-lg shadow-primary/20">
               Get Started
             </Button>
@@ -67,7 +68,6 @@ export function Navigation() {
 
           {/* Mobile Menu Toggle */}
           <div className="flex items-center gap-4 md:hidden">
-            <LanguageToggle />
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
               className="p-2 hover:bg-muted rounded-full transition-colors"

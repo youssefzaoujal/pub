@@ -100,10 +100,39 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "gradient-shift": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "shine-spin": {
+          to: { transform: "rotate(360deg)" },
+        },
+        "float-particle": {
+          "0%, 100%": { transform: "translateY(0) scale(1)", opacity: "0.4" },
+          "50%": { transform: "translateY(-24px) scale(1.2)", opacity: "1" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(0.95)", opacity: "0.6" },
+          "50%": { transform: "scale(1.05)", opacity: "1" },
+          "100%": { transform: "scale(0.95)", opacity: "0.6" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "gradient-shift": "gradient-shift 6s ease infinite",
+        "shine-spin": "shine-spin 4s linear infinite",
+        "float-particle": "float-particle 5s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 3s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "kraft-radial":
+          "radial-gradient(ellipse 80% 60% at 50% -20%, rgba(166,124,82,0.25), transparent)",
+      },
+      boxShadow: {
+        glow: "0 0 40px rgba(166, 124, 82, 0.35), 0 0 80px rgba(234, 179, 8, 0.15)",
+        "glow-lg": "0 0 60px rgba(166, 124, 82, 0.45), 0 0 120px rgba(234, 179, 8, 0.2)",
+        glass: "0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
       },
     },
   },

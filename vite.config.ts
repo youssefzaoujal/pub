@@ -14,6 +14,16 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
+    target: "es2020",
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          motion: ["framer-motion"],
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
   },
   server: {
     fs: {
