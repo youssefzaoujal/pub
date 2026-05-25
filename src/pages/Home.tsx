@@ -391,7 +391,7 @@ function Navigation() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
             <img
-              src="/logo.png"
+              src="/logo.svg"
               alt="Logo F'Yedk Pub"
               className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-[#A67C52]/20 shadow-sm"
             />
@@ -2662,7 +2662,7 @@ function Footer() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="relative">
                   <img 
-                    src="/logo.png" 
+                    src="/logo.svg" 
                     alt="F'Yedk Pub Logo"
                     className="w-12 h-12 rounded-lg"
                   />
