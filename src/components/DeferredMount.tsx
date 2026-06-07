@@ -36,6 +36,11 @@ export function DeferredMount({
       }
     };
 
+    const hash = window.location.hash.slice(1);
+    if (hash === sectionId) {
+      setVisible(true);
+    }
+
     window.addEventListener(SECTION_NAVIGATE_EVENT, onNavigate);
     return () => window.removeEventListener(SECTION_NAVIGATE_EVENT, onNavigate);
   }, [sectionId]);

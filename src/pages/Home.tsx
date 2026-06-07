@@ -25,11 +25,12 @@ import { PremiumButton } from "@/components/design/PremiumButton";
 import { BrandName } from "@/components/design/BrandName";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { TranslationPath } from "@/i18n/translations";
-import { scrollToSection } from "@/lib/scrollToSection";
+import { scrollToSection, SECTION_NAVIGATE_EVENT } from "@/lib/scrollToSection";
 
 const NAV_ITEMS: { id: string; labelKey: TranslationPath }[] = [
   { id: "about", labelKey: "nav.about" },
   { id: "how-it-works", labelKey: "nav.howItWorks" },
+  { id: "pricing", labelKey: "sections.pricing" },
   { id: "partners", labelKey: "nav.partners" },
   { id: "testimonials", labelKey: "nav.testimonials" },
   { id: "contact", labelKey: "nav.contact" },
@@ -39,6 +40,7 @@ const FOOTER_LINKS: { id: string; labelKey: TranslationPath }[] = [
   { id: "hero", labelKey: "footer.home" },
   { id: "about", labelKey: "nav.about" },
   { id: "how-it-works", labelKey: "nav.howItWorks" },
+  { id: "pricing", labelKey: "sections.pricing" },
   { id: "partners", labelKey: "nav.partners" },
   { id: "testimonials", labelKey: "nav.testimonials" },
   { id: "contact", labelKey: "nav.contact" },
@@ -333,6 +335,12 @@ function Navigation() {
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const closeMenu = () => setMobileMenuOpen(false);
+    window.addEventListener(SECTION_NAVIGATE_EVENT, closeMenu);
+    return () => window.removeEventListener(SECTION_NAVIGATE_EVENT, closeMenu);
+  }, []);
+
   const menuItems = [...NAV_ITEMS].reverse();
 
   const handleMenuClick = (
@@ -382,6 +390,10 @@ function Navigation() {
         <div className="flex items-center justify-between h-14 sm:h-20 shrink-0">
           <motion.a
             href="#hero"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("hero");
+            }}
             className="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0"
             whileTap={{ scale: 0.98 }}
             initial={{ x: -50, opacity: 0 }}
