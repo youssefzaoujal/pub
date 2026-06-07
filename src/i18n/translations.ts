@@ -42,16 +42,17 @@ export const copy = {
     partnerBadge: "شريك توزيع معتمد",
   },
   promo: {
-    bar: "عرض خاص — 1000 كيس موزع بـ 700 درهم فقط",
+    bar: "عرض خاص — 100 درهم فقط و ابدا معنا",
     urgency: "عرض محدود · استفد دابا قبل ما يسالي",
     cta: "استفد من العرض",
     badge: "عرض خاص",
     ribbon: "توفير استثنائي",
-    bags: "1000 كيس موزع",
-    price: "700 درهم",
-    print: "طباعة على وجه واحد",
-    pricingTitle: "1000 كيس موزع",
-    bookNow: "احجز الآن واستفد من هذه العرض الخاص",
+    bookNow: "احجز الآن واستفد من العرض الخاص",
+  },
+  pricing: {
+    currency: "درهم",
+    cta: "اختر هذه الباقة",
+    from: "ابتداءً من",
   },
 } as const;
 
@@ -60,7 +61,8 @@ export type TranslationPath =
   | `footer.${keyof typeof copy.footer}`
   | `hero.${keyof typeof copy.hero}`
   | `sections.${keyof typeof copy.sections}`
-  | `promo.${keyof typeof copy.promo}`;
+  | `promo.${keyof typeof copy.promo}`
+  | `pricing.${keyof typeof copy.pricing}`;
 
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const value = path.split(".").reduce<unknown>((acc, part) => {

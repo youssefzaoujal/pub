@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { SECTION_NAVIGATE_EVENT } from "@/lib/scrollToSection";
 
 type DeferredMountProps = {
   children: ReactNode;
+  /** Ancre de navigation toujours présente dans le DOM */
+  sectionId?: string;
   /** Réserve l’espace avant le montage (évite les sauts de layout) */
   minHeight?: string;
   rootMargin?: string;
@@ -14,12 +18,27 @@ type DeferredMountProps = {
  */
 export function DeferredMount({
   children,
+  sectionId,
   minHeight = "320px",
   rootMargin = "280px 0px",
   className,
 }: DeferredMountProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!sectionId) return;
+
+    const onNavigate = (e: Event) => {
+      const targetId = (e as CustomEvent<string>).detail;
+      if (targetId === sectionId) {
+        setVisible(true);
+      }
+    };
+
+    window.addEventListener(SECTION_NAVIGATE_EVENT, onNavigate);
+    return () => window.removeEventListener(SECTION_NAVIGATE_EVENT, onNavigate);
+  }, [sectionId]);
 
   useEffect(() => {
     const node = ref.current;
@@ -42,7 +61,8 @@ export function DeferredMount({
   return (
     <div
       ref={ref}
-      className={className ?? "section-defer"}
+      id={sectionId}
+      className={cn(sectionId && "section-anchor", className ?? "section-defer")}
       style={visible ? undefined : { minHeight }}
     >
       {visible ? children : null}

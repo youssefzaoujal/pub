@@ -14,6 +14,7 @@ import {
   RESTAURANT_CAROUSEL_ITEMS,
   TESTIMONIAL_CAROUSEL_ITEMS,
 } from "@/data/carouselItems";
+import { PRICING_PACKS, type PricingPack } from "@/data/pricingPacks";
 import { PromoBar } from "@/components/PromoBar";
 import {
   AmbientBackground,
@@ -24,6 +25,7 @@ import { PremiumButton } from "@/components/design/PremiumButton";
 import { BrandName } from "@/components/design/BrandName";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { TranslationPath } from "@/i18n/translations";
+import { scrollToSection } from "@/lib/scrollToSection";
 
 const NAV_ITEMS: { id: string; labelKey: TranslationPath }[] = [
   { id: "about", labelKey: "nav.about" },
@@ -266,11 +268,14 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 18 }}
           viewport={{ once: true }}
-          className="inline-flex mb-5 sm:mb-7 relative"
+          className="inline-flex mb-5 sm:mb-7 relative max-w-[90vw]"
         >
           <span className="absolute inset-0 rounded-full bg-amber-400/30 blur-xl animate-pulse-ring" />
-          <span className="relative z-10 inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#8c664b] uppercase tracking-[0.2em] px-5 sm:px-7 py-2.5 glass-card rounded-full border-amber-200/60">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <span
+            dir="rtl"
+            className="relative z-10 inline-flex items-center gap-2 text-sm sm:text-base font-semibold text-[#8c664b] px-5 sm:px-7 py-2.5 glass-card rounded-full border-amber-200/60 font-arabic leading-relaxed"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             {subtitle}
           </span>
         </motion.div>
@@ -330,13 +335,6 @@ function Navigation() {
 
   const menuItems = [...NAV_ITEMS].reverse();
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   const handleMenuClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     sectionId: string
@@ -381,10 +379,10 @@ function Navigation() {
 
 
       <div className="container mx-auto px-4 md:px-6 relative">
-        <div className="flex items-center justify-between h-16 sm:h-20 shrink-0">
+        <div className="flex items-center justify-between h-14 sm:h-20 shrink-0">
           <motion.a
             href="#hero"
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0"
             whileTap={{ scale: 0.98 }}
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -393,14 +391,14 @@ function Navigation() {
             <img
               src="/logo.png"
               alt="Logo F'Yedk Pub"
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-[#A67C52]/20 shadow-sm"
+              className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl border border-[#A67C52]/20 shadow-sm shrink-0"
             />
 
-            <div dir="ltr">
-              <h4 className="text-lg sm:text-2xl font-bold tracking-tight font-latin">
+            <div dir="ltr" className="min-w-0 hidden min-[360px]:block">
+              <h4 className="text-base sm:text-2xl font-bold tracking-tight font-latin truncate">
                 F'Yedk <span className="text-primary">Pub</span>
               </h4>
-              <p className="text-xs text-muted-foreground font-medium font-latin">
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium font-latin truncate">
                 {t("nav.tagline")}
               </p>
             </div>
@@ -474,7 +472,7 @@ function Navigation() {
               transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
             >
               <motion.button
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => scrollToSection("contact")}
                 className={cn(
                   "relative ml-4 px-6 py-2.5 bg-gradient-to-r from-[#A67C52] via-yellow-700 to-[#A67C52] text-white font-bold rounded-full overflow-hidden group shadow-lg shadow-primary/30 text-sm",
                   "font-arabic"
@@ -632,7 +630,7 @@ function Navigation() {
               <motion.button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                  scrollToSection("contact");
                 }}
                 className={cn(
                   "mt-4 w-full px-6 py-3.5 min-h-[48px] bg-gradient-to-r from-[#A67C52] to-yellow-700 text-white font-bold rounded-xl overflow-hidden relative group",
@@ -801,13 +799,13 @@ function Hero() {
   return (
     <section
       ref={containerRef}
-      className="section-anchor relative min-h-[calc(100dvh-var(--header-total))] sm:min-h-[100dvh] flex items-start sm:items-center pt-[var(--header-total)] lg:pt-[var(--header-nav)] overflow-hidden bg-kraft-radial mobile-contain"
+      className="section-anchor relative min-h-[100dvh] flex items-center pt-[var(--header-total)] lg:pt-[var(--header-nav)] overflow-hidden bg-kraft-radial mobile-contain"
       id="hero"
       data-id="الرئيسية"
     >
       <motion.div style={{ y: yParallax }} className="absolute inset-0 pointer-events-none">
         <AmbientBackground variant="hero" />
-        <FloatingParticles count={12} />
+        <FloatingParticles count={calm ? 4 : 8} />
       </motion.div>
 
       <div
@@ -815,26 +813,77 @@ function Hero() {
         style={calm ? undefined : { animation: "gridMove 24s linear infinite" }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-20 grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-2 items-center w-full min-w-0 py-6 sm:py-10 md:py-12 lg:py-0">
-        {/* --- LEFT: TEXT --- */}
+      <div className="container mx-auto px-3 sm:px-6 md:px-8 relative z-20 flex flex-col lg:grid lg:grid-cols-12 gap-3 sm:gap-6 lg:gap-2 items-center w-full min-w-0 py-2 sm:py-8 md:py-10 lg:py-0">
+        {/* --- IMAGE (first on mobile) --- */}
+        <div className="order-1 lg:order-2 lg:col-span-7 relative flex justify-center items-center w-full min-w-0 shrink-0 max-h-[34dvh] sm:max-h-[42dvh] md:max-h-[48dvh] lg:max-h-none lg:h-[min(900px,90vh)] z-10">
+          <motion.div
+            initial={{ scale: 0.92, opacity: 0, y: 16 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, type: "spring", stiffness: 120, delay: 0.15 }}
+            className="relative w-full max-w-[min(100%,220px)] min-[400px]:max-w-[260px] sm:max-w-[340px] md:max-w-[440px] lg:max-w-[600px] xl:max-w-[680px] h-full max-h-full aspect-[4/3] rounded-[20px] sm:rounded-[32px] md:rounded-[50px] transition-all duration-200 ease-out group mx-auto"
+          >
+             <motion.div
+               style={{ opacity: glareOpacity, scaleX: 0.9 }}
+               className="absolute -bottom-[10%] inset-x-[10%] h-[60px] sm:h-[100px] bg-black/30 blur-[60px] sm:blur-[80px] rounded-[100%] z-[-1] transform-gpu"
+             />
+
+            {!calm && (
+              <motion.div
+                className="absolute -inset-3 sm:-inset-4 rounded-[28px] sm:rounded-[40px] bg-gradient-to-r from-amber-400/40 via-[#A67C52]/50 to-amber-400/40 blur-2xl -z-10"
+                animate={{ opacity: [0.35, 0.65, 0.35], scale: [0.98, 1.02, 0.98] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+            )}
+
+            <div className="absolute inset-0 rounded-[18px] sm:rounded-[32px] md:rounded-[50px] bg-gradient-to-br from-white/50 via-white/15 to-white/5 backdrop-blur-[40px] sm:backdrop-blur-[50px] border-[3px] sm:border-[6px] md:border-[8px] border-white/60 shadow-glow-lg overflow-hidden z-20 transform-gpu ring-1 ring-white/40">
+              <div className="absolute inset-0 z-10">
+                 <img
+                  src={heroImage}
+                  alt="Présentation App"
+                  width={800}
+                  height={600}
+                  fetchPriority="high"
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-cover filter saturate-[1.1] contrast-[1.05]"
+                />
+                 <div className="absolute inset-0 bg-gradient-to-t from-[#A67C52]/30 via-transparent to-yellow-100/10 mix-blend-overlay" />
+              </div>
+
+              <div
+                style={{
+                  background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 30%, rgba(255,255,255,0) 60%)`,
+                  opacity: glareOpacity
+                }}
+                className="absolute inset-0 pointer-events-none mix-blend-plus-lighter z-30"
+              />
+              <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0_3px_4px_rgba(255,255,255,0.8),_inset_0_-3px_4px_rgba(0,0,0,0.2)] z-40 pointer-events-none border border-white/30" />
+            </div>
+
+            <div className="absolute top-1.5 right-1.5 sm:top-4 sm:right-4 glass-card px-2 py-1 sm:px-3 sm:py-2 rounded-full shadow-md z-40 flex items-center gap-1.5 border-emerald-300/50">
+              <Target className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-emerald-600 shrink-0" />
+              <span className="font-bold text-emerald-700 text-[10px] sm:text-sm whitespace-nowrap">
+                Ciblage Précis
+              </span>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* --- TEXT --- */}
           <motion.div
             initial="hidden"
             animate="visible"
-            transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
-            className="lg:col-span-5 flex flex-col justify-center relative z-30 text-center items-center"
+            transition={{ staggerChildren: 0.08, delayChildren: 0.05 }}
+            className="order-2 lg:order-1 lg:col-span-5 flex flex-col justify-center relative z-30 text-center items-center w-full min-w-0 shrink"
           >
-          {/* Promo highlight */}
+          {/* Promo highlight — desktop only */}
           <motion.div
             variants={textReveal}
             className="mb-6 w-full max-w-lg hidden lg:block"
           >
             <button
               type="button"
-              onClick={() =>
-                document
-                  .getElementById("pricing")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+              onClick={() => scrollToSection("pricing")}
               className={cn(
                 "relative w-full text-left rounded-2xl px-4 py-3 sm:px-5 sm:py-4 glass-card shadow-glow hover:shadow-glow-lg transition-all duration-500 overflow-hidden group",
                 "text-right font-arabic"
@@ -860,16 +909,15 @@ function Hero() {
             </button>
           </motion.div>
 
-          <motion.div variants={textReveal} className="mb-6 sm:mb-8 inline-block relative">
-            <span className="relative inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-yellow-50/90 via-orange-50/90 to-yellow-50/90 text-yellow-900 text-xs sm:text-sm font-bold border-2 border-yellow-300/60 shadow-md backdrop-blur-xl font-arabic">
-              <Sparkles className="w-4 h-4 text-yellow-600 shrink-0" />
+          <motion.div variants={textReveal} className="mb-2 sm:mb-4 lg:mb-6 inline-block relative">
+            <span className="relative inline-flex items-center gap-1.5 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-gradient-to-r from-yellow-50/90 via-orange-50/90 to-yellow-50/90 text-yellow-900 text-[10px] sm:text-sm font-bold border border-yellow-300/60 sm:border-2 shadow-md backdrop-blur-xl font-arabic">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600 shrink-0" />
               {t("hero.badge")}
             </span>
           </motion.div>
 
-          {/* Titre + slogan — centrés */}
-          <div className="w-full max-w-4xl mx-auto text-center flex flex-col items-center mb-8 sm:mb-10 md:mb-12">
-            <div className="overflow-visible mb-4 sm:mb-6 relative w-full">
+          <div className="w-full max-w-4xl mx-auto text-center flex flex-col items-center mb-3 sm:mb-6 lg:mb-10">
+            <div className="overflow-visible mb-2 sm:mb-4 relative w-full">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-b from-yellow-400/30 via-orange-400/20 to-transparent blur-3xl -z-10"
                 animate={{
@@ -884,18 +932,17 @@ function Hero() {
               />
               <motion.h1
                 variants={textReveal}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight relative text-center"
+                className="text-[1.65rem] leading-[1.2] min-[400px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight relative text-center"
               >
                 <span
                   className={cn(
-                    "block text-center text-gradient-gold pb-2 sm:pb-4 lg:scale-[1.02] relative drop-shadow-sm",
+                    "block text-center text-gradient-gold pb-1 sm:pb-3 lg:scale-[1.02] relative drop-shadow-sm",
                     "font-arabic"
                   )}
                   dir="rtl"
                   style={{
                     textShadow:
-                      "0 15px 40px rgba(166,124,82,0.3), 0 0 80px rgba(234,179,8,0.2)",
-                    filter: "drop-shadow(0 0 20px rgba(234,179,8,0.3))",
+                      "0 8px 24px rgba(166,124,82,0.25), 0 0 40px rgba(234,179,8,0.15)",
                   }}
                 >
                   {t("hero.title")}
@@ -905,7 +952,7 @@ function Hero() {
 
             <motion.h2 variants={textReveal} className="w-full text-center">
               <span
-                className="block text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-[#8c6743] font-bold relative font-latin"
+                className="block text-center text-base sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl text-[#8c6743] font-bold relative font-latin leading-tight"
                 dir="ltr"
               >
                 {t("nav.tagline")}
@@ -913,73 +960,29 @@ function Hero() {
             </motion.h2>
           </div>
 
-        </motion.div>
-
-        {/* --- RIGHT: THE "WOW" 3D SINGLE IMAGE CONTAINER --- */}
-        <div className="lg:col-span-7 relative flex justify-center items-center max-h-[48vh] sm:max-h-[58vh] lg:max-h-none lg:h-[min(900px,90vh)] z-10 mt-4 sm:mt-10 lg:mt-0 w-full min-w-0 overflow-hidden">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 30 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, type: "spring", stiffness: 100, delay: 0.3 }}
-            className="relative w-full max-w-[min(100%,280px)] sm:max-w-[380px] md:max-w-[480px] lg:max-w-[600px] xl:max-w-[680px] aspect-[4/3] rounded-[24px] sm:rounded-[40px] md:rounded-[50px] transition-all duration-200 ease-out group mx-auto"
+            variants={textReveal}
+            className="flex flex-col min-[400px]:flex-row items-stretch min-[400px]:items-center justify-center gap-2 sm:gap-3 w-full max-w-md lg:max-w-lg px-1"
           >
-             {/* L'ombre 3D portée au sol */}
-             <motion.div
-               style={{ opacity: glareOpacity, scaleX: 0.9 }}
-               className="absolute -bottom-[15%] inset-x-[10%] h-[100px] bg-black/30 blur-[80px] rounded-[100%] z-[-1] transform-gpu translate-z-[-100px]"
-             />
-
-
-            {!calm && (
-              <motion.div
-                className="absolute -inset-4 rounded-[40px] bg-gradient-to-r from-amber-400/40 via-[#A67C52]/50 to-amber-400/40 blur-2xl -z-10"
-                animate={{ opacity: [0.4, 0.75, 0.4], scale: [0.98, 1.02, 0.98] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              />
-            )}
-
-            {/* LE CADRE DE VERRE PRINCIPAL */}
-            <div className="absolute inset-0 rounded-[30px] sm:rounded-[40px] md:rounded-[50px] bg-gradient-to-br from-white/50 via-white/15 to-white/5 backdrop-blur-[50px] border-[4px] sm:border-[6px] md:border-[8px] border-white/60 shadow-glow-lg overflow-hidden z-20 transform-gpu ring-1 ring-white/40">
-
-              {/* --- L'IMAGE UNIQUE STABLE --- */}
-              <div className="absolute inset-0 z-10">
-                 <img
-                  src={heroImage}
-                  alt="Présentation App"
-                  width={800}
-                  height={600}
-                  fetchpriority="high"
-                  loading="eager"
-                  decoding="async"
-                  className="w-full h-full object-cover filter saturate-[1.1] contrast-[1.05]"
-                />
-                 {/* Overlay couleur subtil sur l'image */}
-                 <div className="absolute inset-0 bg-gradient-to-t from-[#A67C52]/30 via-transparent to-yellow-100/10 mix-blend-overlay" />
-              </div>
-
-               {/* EFFET DE LUMIÈRE (GLARE) STATIQUE SUR LE VERRE */}
-              <div
-                style={{
-                  background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 30%, rgba(255,255,255,0) 60%)`,
-                  opacity: glareOpacity
-                }}
-                className="absolute inset-0 pointer-events-none mix-blend-plus-lighter z-30"
-              />
-               {/* Reflets statiques sur les bords pour l'effet "verre taillé" */}
-              <div className="absolute inset-0 rounded-[50px] shadow-[inset_0_3px_4px_rgba(255,255,255,0.8),_inset_0_-3px_4px_rgba(0,0,0,0.2)] z-40 pointer-events-none border border-white/30"></div>
-            </div>
-
-
-            {/* ÉLÉMENTS FLOTTANTS AUTOUR DU CADRE */}
-            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 glass-card px-3 py-2 rounded-full shadow-md z-40 flex items-center gap-2 border-emerald-300/50 max-w-[calc(100%-1rem)]">
-              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 shrink-0" />
-              <span className="font-bold text-emerald-700 text-xs sm:text-sm whitespace-nowrap">
-                Ciblage Précis
-              </span>
-            </div>
-
+            <PremiumButton
+              className="w-full min-[400px]:flex-1 py-3 sm:py-4 text-sm sm:text-base rounded-xl font-arabic min-h-[44px]"
+              onClick={() => scrollToSection("contact")}
+            >
+              {t("nav.cta")}
+              <ArrowRight className="w-4 h-4 rotate-180" />
+            </PremiumButton>
+            <button
+              type="button"
+              onClick={() => scrollToSection("pricing")}
+              className={cn(
+                "w-full min-[400px]:flex-1 py-3 sm:py-4 min-h-[44px] rounded-xl border-2 border-[#A67C52]/35 bg-white/80 text-[#8c664b] font-bold text-sm sm:text-base shadow-sm hover:bg-amber-50/90 transition-colors font-arabic"
+              )}
+            >
+              {t("sections.pricing")}
+            </button>
           </motion.div>
-        </div>
+
+        </motion.div>
 
       </div>
 
@@ -1108,9 +1111,8 @@ function About() {
   return (
     <section 
       ref={containerRef} 
-      id="about"
       data-id="من نحن" 
-      className="section-anchor py-12 sm:py-16 md:py-20 lg:py-32 bg-[#fdfbf7] relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-20 lg:py-32 bg-[#fdfbf7] relative overflow-hidden"
     >
       <AmbientBackground variant="warm" />
       <div className="absolute inset-0 opacity-[0.25] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/cardboard.png')]" />
@@ -1518,7 +1520,7 @@ function VideoShowcase() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#A67C52] to-yellow-700 text-white font-bold rounded-full font-arabic text-base sm:text-lg flex items-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl transition-all relative overflow-hidden group"
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => scrollToSection("contact")}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
@@ -1680,7 +1682,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" data-id="كيفاش كنخدمو" className="section-anchor py-12 sm:py-16 md:py-20 lg:py-32 bg-white relative overflow-hidden">
+    <section data-id="كيفاش كنخدمو" className="py-12 sm:py-16 md:py-20 lg:py-32 bg-white relative overflow-hidden">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#A67C52]/20 to-transparent"></div>
@@ -1959,319 +1961,250 @@ function ROICalculator() {
 
 
 // === PRICING SECTION ===
+const PACK_ACCENT_STYLES = {
+  bronze: {
+    glow: "from-[#A67C52]/25 to-amber-300/20",
+    header: "from-[#8c664b] via-[#A67C52] to-amber-700",
+    icon: "from-[#A67C52] to-amber-600",
+    border: "border-[#A67C52]/25",
+    badge: "bg-[#A67C52]/90",
+    price: "text-[#8c664b]",
+  },
+  gold: {
+    glow: "from-amber-400/35 to-yellow-300/25",
+    header: "from-amber-500 via-yellow-600 to-[#A67C52]",
+    icon: "from-amber-400 to-yellow-600",
+    border: "border-amber-400/50",
+    badge: "bg-amber-500",
+    price: "text-amber-700",
+  },
+  premium: {
+    glow: "from-violet-400/25 via-[#A67C52]/30 to-amber-400/25",
+    header: "from-[#5c3d2e] via-[#A67C52] to-amber-600",
+    icon: "from-violet-500 via-[#A67C52] to-amber-500",
+    border: "border-violet-300/40",
+    badge: "bg-gradient-to-r from-violet-600 to-[#A67C52]",
+    price: "text-[#5c3d2e]",
+  },
+} as const;
+
+function PricingPackCard({
+  pack,
+  index,
+  onSelect,
+  ctaLabel,
+  currency,
+}: {
+  pack: PricingPack;
+  index: number;
+  onSelect: () => void;
+  ctaLabel: string;
+  currency: string;
+}) {
+  const styles = PACK_ACCENT_STYLES[pack.accent];
+  const Icon = pack.icon;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.65, delay: index * 0.12, type: "spring", stiffness: 90 }}
+      whileHover={{ y: -6 }}
+      className="relative flex flex-col h-full"
+    >
+      <motion.div
+        className={cn(
+          "absolute -inset-0.5 rounded-[1.75rem] bg-gradient-to-br opacity-60 blur-lg",
+          styles.glow
+        )}
+        animate={{ opacity: pack.featured ? [0.45, 0.75, 0.45] : [0.25, 0.45, 0.25] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <div
+        className={cn(
+          "relative flex flex-col h-full rounded-[1.65rem] overflow-hidden bg-white/90 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(92,61,46,0.25)] border-2 transition-shadow duration-500 hover:shadow-[0_28px_80px_-16px_rgba(166,124,82,0.35)]",
+          styles.border,
+          pack.featured && "ring-2 ring-amber-300/40"
+        )}
+      >
+        {pack.badge && (
+          <div className="absolute top-4 right-4 z-20">
+            <motion.span
+              animate={pack.featured ? { scale: [1, 1.06, 1] } : undefined}
+              transition={{ duration: 2, repeat: Infinity }}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-xs font-bold shadow-lg font-arabic",
+                styles.badge
+              )}
+            >
+              {pack.featured && <Sparkles className="w-3.5 h-3.5" />}
+              {pack.badge}
+            </motion.span>
+          </div>
+        )}
+
+        <div
+          className={cn(
+            "relative px-6 pt-12 pb-8 sm:px-8 sm:pt-14 sm:pb-10 text-white text-center overflow-hidden bg-gradient-to-br",
+            styles.header
+          )}
+        >
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+            animate={{ x: ["-100%", "200%"] }}
+            transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2, ease: "linear" }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41z'/%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
+
+          <motion.div
+            className={cn(
+              "relative z-10 mx-auto mb-5 w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-2xl flex items-center justify-center shadow-xl bg-gradient-to-br",
+              styles.icon
+            )}
+            whileHover={{ rotate: [0, -8, 8, 0], scale: 1.08 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Icon className="w-8 h-8 sm:w-9 sm:h-9 text-white" />
+          </motion.div>
+
+          <h3 className="relative z-10 text-xl sm:text-2xl font-bold font-arabic mb-2" dir="rtl">
+            {pack.name}
+          </h3>
+          <p className="relative z-10 text-sm sm:text-base text-white/85 font-arabic leading-relaxed max-w-[16rem] mx-auto" dir="rtl">
+            {pack.tagline}
+          </p>
+
+          <div className="relative z-10 mt-6 flex items-end justify-center gap-2">
+            <span className={cn("text-5xl sm:text-6xl font-black tabular-nums leading-none", styles.price, "text-white drop-shadow-md")}>
+              {pack.price}
+            </span>
+            <span className="text-lg sm:text-xl font-bold text-white/90 pb-1 font-arabic">
+              {currency}
+            </span>
+          </div>
+        </div>
+
+        <ul className="flex-1 px-5 py-6 sm:px-7 sm:py-8 space-y-3 sm:space-y-4 bg-gradient-to-b from-white to-[#faf8f5]">
+          {pack.features.map((feature, i) => (
+            <motion.li
+              key={feature.text}
+              initial={{ opacity: 0, x: 16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.06 }}
+              className={cn(
+                "flex items-start gap-3 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 transition-colors",
+                feature.included ? "bg-emerald-50/60" : "bg-gray-50/80"
+              )}
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
+                  feature.included
+                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
+                    : "bg-gray-200 text-gray-400"
+                )}
+              >
+                {feature.included ? (
+                  <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                ) : (
+                  <X className="w-3.5 h-3.5" strokeWidth={3} />
+                )}
+              </span>
+              <span
+                className={cn(
+                  "font-arabic text-sm sm:text-base leading-relaxed pt-0.5",
+                  feature.included ? "text-gray-800 font-medium" : "text-gray-400 line-through decoration-gray-300"
+                )}
+                dir="rtl"
+              >
+                {feature.text}
+              </span>
+            </motion.li>
+          ))}
+        </ul>
+
+        <div className="px-5 pb-6 sm:px-7 sm:pb-8 pt-2 bg-gradient-to-b from-[#faf8f5] to-white">
+          <PremiumButton
+            className={cn("w-full py-4 sm:py-5 text-base sm:text-lg rounded-xl font-arabic")}
+            onClick={onSelect}
+          >
+            <ArrowRight className="w-5 h-5 rotate-180" />
+            {ctaLabel}
+          </PremiumButton>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
 function PricingSection() {
   const { t } = useLanguage();
+  const calm = usePerf() === "lite";
+
   return (
-    <section id="pricing" className="section-anchor py-12 sm:py-16 md:py-20 lg:py-32 bg-gradient-to-b from-[#f8f5f2] via-white to-[#f8f5f2] relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-[#A67C52]/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.6, 0.3],
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
+    <section className="py-12 sm:py-16 md:py-20 lg:py-32 bg-gradient-to-b from-[#f8f5f2] via-white to-[#f8f5f2] relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        {!calm && (
+          <>
+            <motion.div
+              className="absolute top-16 -left-20 w-80 h-80 bg-[#A67C52]/12 rounded-full blur-3xl"
+              animate={{ scale: [1, 1.2, 1], x: [0, 40, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute bottom-10 -right-16 w-96 h-96 bg-amber-300/15 rounded-full blur-3xl"
+              animate={{ scale: [1, 1.25, 1], y: [0, -30, 0] }}
+              transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,700px)] h-[min(90vw,700px)] bg-violet-200/10 rounded-full blur-[100px]"
+              animate={{ opacity: [0.3, 0.55, 0.3] }}
+              transition={{ duration: 6, repeat: Infinity }}
+            />
+          </>
+        )}
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <SectionHeading 
-          title={t("sections.pricing")}
-        />
-        
-        <div className="max-w-4xl mx-auto">
-          {/* Main Pricing Card with Glassmorphism */}
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, type: "spring" }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            {/* Glow effect behind card */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-[#A67C52] to-yellow-600 rounded-[3rem] blur-2xl opacity-30"
-              animate={{
-                opacity: [0.2, 0.4, 0.2],
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            
-            <div className="relative glass-card rounded-[2rem] sm:rounded-[3rem] shadow-glow-lg border-2 border-amber-400/40 overflow-hidden ring-2 ring-amber-300/20">
-              {/* Promo ribbon */}
-              <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-                <motion.div
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500 text-white text-xs sm:text-sm font-bold shadow-lg",
-                    "font-arabic"
-                  )}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {t("promo.ribbon")}
-                </motion.div>
-              </div>
+        <SectionHeading title={t("sections.pricing")} />
 
-              {/* Premium header with animated gradient */}
-              <div className="relative bg-gradient-to-br from-[#A67C52] via-yellow-700 to-[#A67C52] p-6 sm:p-8 md:p-10 lg:p-12 text-white text-center overflow-hidden">
-                {/* Animated gradient overlay */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  animate={{
-                    x: ["-100%", "200%"],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatDelay: 1,
-                    ease: "linear",
-                  }}
-                />
-                
-                {/* Pattern overlay */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute inset-0" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                  }} />
-                </div>
-                
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
-                  viewport={{ once: true }}
-                  className="relative z-10"
-                >
-                  {/* Icon with pulse animation */}
-                  <motion.div
-                    className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-white/20 backdrop-blur-md rounded-full mb-6 sm:mb-8 relative"
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <Package className="w-12 h-12 relative z-10" />
-                    {/* Pulsing ring */}
-                    <motion.div
-                      className="absolute inset-0 border-2 border-white/50 rounded-full"
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.5, 0, 0.5],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                  </motion.div>
-                  
-                  <motion.h3
-                    className={cn(
-                      "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6",
-                      "font-arabic"
-                    )}
-                    dir="rtl"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    viewport={{ once: true }}
-                  >
-                    {t("promo.pricingTitle")}
-                  </motion.h3>
-                  
-                  {/* Animated price */}
-                  <motion.div
-                    className="flex items-baseline justify-center gap-3 mb-6"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 200, delay: 0.5 }}
-                    viewport={{ once: true }}
-                  >
-                    <motion.span
-                      className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight tabular-nums"
-                      animate={{
-                        textShadow: [
-                          "0 0 20px rgba(255,255,255,0.5)",
-                          "0 0 40px rgba(255,255,255,0.8)",
-                          "0 0 20px rgba(255,255,255,0.5)",
-                        ],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      700
-                    </motion.span>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold opacity-90">
-                      درهم
-                    </span>
-                  </motion.div>
-                  
-                  <motion.p
-                    className={cn(
-                      "text-base sm:text-lg md:text-xl opacity-90 mb-2",
-                      "font-arabic"
-                    )}
-                    dir="rtl"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 0.9 }}
-                    transition={{ delay: 0.6 }}
-                    viewport={{ once: true }}
-                  >
-                    {t("promo.print")}
-                  </motion.p>
-                  <motion.p
-                    className={cn(
-                      "text-sm sm:text-base font-semibold text-amber-100",
-                      "font-arabic"
-                    )}
-                    dir="rtl"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.65 }}
-                    viewport={{ once: true }}
-                  >
-                    {t("promo.urgency")}
-                  </motion.p>
-                </motion.div>
-              </div>
-
-              {/* Option: Double Face with enhanced design */}
-              <div className="p-4 sm:p-6 md:p-10 bg-gradient-to-b from-white to-gray-50/50">
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, type: "spring", stiffness: 150 }}
-                  viewport={{ once: true }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-amber-400/20 rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 p-6 sm:p-8 bg-gradient-to-r from-yellow-50 via-amber-50 to-yellow-50 rounded-2xl sm:rounded-3xl border-2 border-yellow-300/50 shadow-lg">
-                    <div className="flex items-center gap-4 sm:gap-6">
-                      <motion.div
-                        className="relative w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0"
-                        whileHover={{ scale: 1.1, rotate: 180 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <RefreshCw className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-                        <motion.div
-                          className="absolute inset-0 border-2 border-yellow-400/50 rounded-2xl"
-                          animate={{
-                            rotate: 360,
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                        />
-                      </motion.div>
-                      <div>
-                        <h4 className="text-lg sm:text-xl md:text-2xl font-bold font-arabic text-gray-900 mb-2" dir="rtl">
-                          طباعة على الوجهين
-                        </h4>
-                        <p className="text-sm sm:text-base text-gray-600 font-arabic" dir="rtl">
-                          أضف تأثيراً مضاعفاً لإعلانك - تأثير مزدوج
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <motion.div
-                      className="text-left sm:text-right w-full sm:w-auto"
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl sm:text-4xl font-black text-[#A67C52]">+300</span>
-                        <span className="text-lg sm:text-xl font-bold text-gray-600">درهم</span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-gray-500 mt-1" dir="rtl">إضافي</p>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Features with icons */}
-              <div className="p-6 sm:p-8 md:p-10 bg-gradient-to-b from-gray-50/50 to-white">
-                <h4 className="text-xl sm:text-2xl font-bold font-arabic text-center mb-6 sm:mb-8 text-gray-900" dir="rtl">
-                  ما ستحصل عليه
-                </h4>
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  {[
-                    { icon: Truck, text: "توزيع على مطاعم بيتزا شركاء" },
-                    { icon: Palette, text: "تصميم احترافي مجاناً" },
-                    { icon: Globe, text: "موقع إلكتروني إذا ما عندكش كنصاوبوهولك باش تقدر تعرض خدمتك بشكل احترافي" },
-                    { icon: Heart, text: "دعم كامل قبل وبعد الخدمة" },
-                  ].map((feature, index) => (
-                    <motion.div
-                      key={index}
-                      className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 group"
-                      initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1, type: "spring" }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -5, scale: 1.02 }}
-                    >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#A67C52] to-yellow-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                      </div>
-                      <span className="font-arabic text-gray-700 text-base sm:text-lg font-medium pt-1 sm:pt-2" dir="rtl">
-                        {feature.text}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-6 sm:p-8 md:p-10 bg-gradient-to-b from-white/80 to-amber-50/30">
-                <PremiumButton
-                  className={cn("w-full text-lg sm:text-xl md:text-2xl py-5 sm:py-6 rounded-2xl", "font-arabic")}
-                  onClick={() => {
-                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                >
-                  <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {t("promo.bookNow")}
-                </PremiumButton>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
+          {PRICING_PACKS.map((pack, index) => (
+            <div
+              key={pack.id}
+              className={cn(
+                index === 2 && "md:col-span-2 md:max-w-sm md:justify-self-center lg:col-span-1 lg:max-w-none lg:justify-self-stretch"
+              )}
+            >
+              <PricingPackCard
+                pack={pack}
+                index={index}
+                ctaLabel={t("pricing.cta")}
+                currency={t("pricing.currency")}
+                onSelect={() => scrollToSection("contact")}
+              />
             </div>
-          </motion.div>
+          ))}
         </div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-10 sm:mt-14 text-center text-sm sm:text-base text-gray-500 font-arabic max-w-2xl mx-auto leading-relaxed"
+          dir="rtl"
+        >
+          {t("promo.urgency")} — تواصل معنا ونختارو الباقة المناسبة لمشروعك.
+        </motion.p>
       </div>
     </section>
   );
@@ -2388,7 +2321,7 @@ function ROISection() {
 function Partners() {
   const { t } = useLanguage();
   return (
-    <section id="partners" data-id="شركاؤنا" className="section-anchor py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
+    <section data-id="شركاؤنا" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#A67C52] rounded-full blur-3xl" />
@@ -2468,9 +2401,8 @@ function Testimonials() {
   const { t } = useLanguage();
   return (
     <section
-      id="testimonials"
       data-id="آراء زبنائنا"
-      className="section-anchor py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-muted/30"
+      className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-muted/30"
     >
       <div className="container mx-auto px-4 md:px-6">
         <SectionHeading title={t("sections.testimonials")} />
@@ -2517,7 +2449,7 @@ function Contact() {
   ];
 
   return (
-    <section id="contact" data-id="تواصل معنا" className="section-anchor py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section data-id="تواصل معنا" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 right-1/4 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 bg-[#A67C52] rounded-full blur-3xl" />
@@ -2705,10 +2637,7 @@ function Footer() {
                       href={`#${link.id}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        const element = document.getElementById(link.id);
-                        if (element) {
-                          element.scrollIntoView({ behavior: "smooth", block: "start" });
-                        }
+                        scrollToSection(link.id);
                       }}
                       className={cn(
                         "block text-gray-400 hover:text-primary transition-colors text-sm cursor-pointer",
@@ -2852,6 +2781,13 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 
 // === MAIN APP ===
 export default function LandingPage() {
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      scrollToSection(hash);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen overflow-x-hidden relative promo-theme mobile-contain">
       <HeaderMetrics />
@@ -2863,7 +2799,7 @@ export default function LandingPage() {
         <SectionDivider />
         <StatsSection />
         <SectionDivider />
-        <DeferredMount minHeight="520px">
+        <DeferredMount minHeight="520px" sectionId="about">
           <About />
         </DeferredMount>
         <SectionDivider />
@@ -2871,11 +2807,11 @@ export default function LandingPage() {
           <VideoShowcase />
         </DeferredMount>
         <SectionDivider />
-        <DeferredMount minHeight="640px">
+        <DeferredMount minHeight="640px" sectionId="how-it-works">
           <HowItWorks />
         </DeferredMount>
         <SectionDivider />
-        <DeferredMount minHeight="720px">
+        <DeferredMount minHeight="720px" sectionId="pricing">
           <PricingSection />
         </DeferredMount>
         <SectionDivider />
@@ -2883,7 +2819,7 @@ export default function LandingPage() {
           <ROISection />
         </DeferredMount>
         <SectionDivider />
-        <DeferredMount minHeight="400px">
+        <DeferredMount minHeight="400px" sectionId="partners">
           <Partners />
         </DeferredMount>
         <SectionDivider />
@@ -2891,11 +2827,11 @@ export default function LandingPage() {
           <PartnersDistributors />
         </DeferredMount>
         <SectionDivider />
-        <DeferredMount minHeight="420px">
+        <DeferredMount minHeight="420px" sectionId="testimonials">
           <Testimonials />
         </DeferredMount>
         <SectionDivider />
-        <DeferredMount minHeight="520px">
+        <DeferredMount minHeight="520px" sectionId="contact">
           <Contact />
         </DeferredMount>
       </main>

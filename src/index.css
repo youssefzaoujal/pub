@@ -247,15 +247,15 @@
 .promo-theme {
   background: linear-gradient(180deg, #faf8f5 0%, #f8f5f2 40%, #faf8f5 100%);
   --promo-glow: rgba(245, 158, 11, 0.15);
-  --header-nav: 4rem;
-  --header-promo: 7rem;
+  --header-nav: 3.5rem;
+  --header-promo: 2.75rem;
   --header-total: calc(var(--header-nav) + var(--header-promo));
 }
 
 @media (min-width: 640px) {
   .promo-theme {
     --header-nav: 5rem;
-    --header-promo: 4.75rem;
+    --header-promo: 3rem;
   }
 }
 
