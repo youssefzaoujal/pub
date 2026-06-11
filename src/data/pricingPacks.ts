@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Package, Globe, Crown } from "lucide-react";
+import { Package, Crown } from "lucide-react";
 
 export type PricingPack = {
   id: string;
@@ -17,7 +17,7 @@ export const PRICING_PACKS: PricingPack[] = [
   {
     id: "starter",
     name: "الباقة الأساسية",
-    price: 100,
+    price: 199,
     tagline: "ابدأ الإشهار المحلي بأقل تكلفة",
     icon: Package,
     badge: "للبدء",
@@ -31,28 +31,13 @@ export const PRICING_PACKS: PricingPack[] = [
     ],
   },
   {
-    id: "vitrine",
-    name: "باقة الموقع",
-    price: 300,
-    tagline: "إشهار + حضور رقمي احترافي",
-    icon: Globe,
-    badge: "الأكثر طلباً",
-    featured: true,
-    accent: "gold",
-    features: [
-      { text: "كل مميزات الباقة الأساسية", included: true },
-      { text: "موقع vitrine احترافي", included: true },
-      { text: "عرض خدماتك على الإنترنت", included: true },
-      { text: "رابط خاص بمشروعك", included: true },
-    ],
-  },
-  {
     id: "tanger",
     name: "باقة طنجة",
-    price: 500,
+    price: 499,
     tagline: "انتشار كامل في طنجة — شهر بعد شهر",
     icon: Crown,
     badge: "الخيار الأمثل",
+    featured: true,
     accent: "premium",
     features: [
       { text: "توزيع في منطقتك وطنجة كاملة", included: true },

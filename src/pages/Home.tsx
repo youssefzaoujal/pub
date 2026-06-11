@@ -2188,22 +2188,16 @@ function PricingSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <SectionHeading title={t("sections.pricing")} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8 max-w-4xl mx-auto items-stretch">
           {PRICING_PACKS.map((pack, index) => (
-            <div
+            <PricingPackCard
               key={pack.id}
-              className={cn(
-                index === 2 && "md:col-span-2 md:max-w-sm md:justify-self-center lg:col-span-1 lg:max-w-none lg:justify-self-stretch"
-              )}
-            >
-              <PricingPackCard
-                pack={pack}
-                index={index}
-                ctaLabel={t("pricing.cta")}
-                currency={t("pricing.currency")}
-                onSelect={() => scrollToSection("contact")}
-              />
-            </div>
+              pack={pack}
+              index={index}
+              ctaLabel={t("pricing.cta")}
+              currency={t("pricing.currency")}
+              onSelect={() => scrollToSection("contact")}
+            />
           ))}
         </div>
 
